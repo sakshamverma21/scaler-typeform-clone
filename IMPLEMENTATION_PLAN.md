@@ -447,3 +447,11 @@ Fixed before acceptance: test fixture needed the real write Origin; Escape in th
 Deferred by user time constraint: full legacy API/unit/E2E rerun, every first/middle/last permutation, many-question/choice limits, complete type-change matrix, lost-ack network fault matrix, client/server fixture parity, Firefox/WebKit, physical phone, all viewport/zoom/keyboard/motion/accessibility checks. M04/M06–M09/public interaction criteria remain partial where that evidence or Phase 5/6 integration is missing. No bonus, live rollout or cloud durability claim.
 
 **Stop for review. Next phase: 5 — respondent and sharing.**
+
+## Dashboard correction requested before Phase 5 — 2026-10-09
+
+The user requested an urgent correction to the initial page using their attached Typeform workspace screenshot. Reworked the existing dashboard and shared shell: account header, mint banner, application tabs, wider sidebar/create/search, suggestion cards, heading controls, original orange covers and compact form rows. Real workspace queries/CRUD, statuses, sample labels, counts and failures remain intact. Added explicit explanations for out-of-scope navigation; no later-phase workflow was started.
+
+Verification: explicit bundled Node 24.19.0; `node node_modules/eslint/bin/eslint.js . --max-warnings=0` passed. `node scripts/run-e2e.mjs dashboard.spec.ts` production build/strict TypeScript passed, followed by **2 Chromium tests passed** against real Next/FastAPI/file-backed SQLite. These exercise create/error retry, rename/reload, duplicate independence, deletion/cancellation/focus, search/grid, empty state, bootstrap failure/retry, isolation/session expiry and mobile overflow. Actual desktop/mobile screenshots viewed against the user attachment. Foundation test heading selectors updated to My workspace; the foundation suite itself was not rerun. Normal-target build restored after the browser runner.
+
+Stop for visual review. Phase 5 (respondent and sharing) remains the next development phase. Live Vercel rollout and full release QA are separate pending evidence.

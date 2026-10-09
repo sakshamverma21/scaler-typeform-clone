@@ -160,3 +160,10 @@ Phase 3 integrates real workspace operations, menus/dialogs/toasts, pending/fail
 | A52 | Focused Phase 4 QA | 3 autosave unit checks, 2 actual Chromium workflows, strict build/lint/format and desktop/mobile builder screenshots checked. Full regression/parity/cross-browser/phone/fault matrix deferred by user time constraint, not passed. |
 
 No schema/business-rule change or new seed dataset was necessary. Original modules authored locally; no clone code/assets reused. dnd-kit 0.5.0 pinned; package installation initially warned because npm used system Node 22, while all acceptance commands explicitly used bundled Node 24.19.0. Existing five development-only advisories remain recorded in A31; no forced downgrade performed. Source shipment is recorded separately from actual cloud rollout.
+
+## Dashboard visual correction — 2026-10-09
+
+| ID | Actual decision / limitation | Evidence / submission relevance |
+|---|---|---|
+| A53 | Match the user-supplied workspace screenshot without inventing commercial functionality | Full-width tabs/banner and broad sidebar replace the initial shell. Account remains a browser-private demo. Banner describes the demo; sidebar counts loaded responses, including labeled synthetic seeds. No paid response quota is enforced or advertised. Completion-rate column displays an em dash because attempts are not tracked. Out-of-scope sections explicitly explain that they are placeholders; no bonus is claimed. |
+| A54 | Focused verification for urgent dashboard correction | Strict production build/types, ESLint and the existing two real Chromium dashboard workflows passed; desktop/mobile captures inspected and mobile overflow checked. Full regression, physical phone and exhaustive visual/accessibility testing remain deferred. No backend/database behavior changed. Source push does not itself verify cloud rollout. |

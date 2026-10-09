@@ -11,16 +11,17 @@ import { useRef, useState, useSyncExternalStore } from "react";
 import {
   CalendarDays,
   FilePlus2,
-  FileText,
   LayoutGrid,
   List,
   LoaderCircle,
-  MessageSquareText,
   Plus,
-  Search,
+  Sparkles,
+  UserPlus,
+  MoreHorizontal,
+  Blocks,
   X,
 } from "lucide-react";
-import { WorkspaceShell } from "@/components/workspace-shell";
+import { WorkspaceShell, WorkspaceCover } from "@/components/workspace-shell";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useNotify } from "@/components/ui/notifications";
@@ -55,19 +56,6 @@ function subscribeView(listener: () => void) {
   };
 }
 const serverView = () => "list" as const;
-
-function FormMark({ title }: { title: string }) {
-  const event = title.includes("Event registration");
-  const feedback = title.includes("Product feedback");
-  const Icon = event ? CalendarDays : feedback ? MessageSquareText : FileText;
-  return (
-    <span
-      className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${event ? "bg-[#e4f0e9] text-[#496b58]" : feedback ? "bg-[#f0e6f7] text-[#7f5b91]" : "bg-[#f6ece0] text-[#94724e]"}`}
-    >
-      <Icon size={19} strokeWidth={1.5} aria-hidden="true" />
-    </span>
-  );
-}
 
 function Status({ published }: { published: boolean }) {
   return (
@@ -108,7 +96,10 @@ export function Dashboard() {
   const [dialog, setDialog] = useState<DialogState | null>(null);
   const [name, setName] = useState("");
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("updated");
+  const [sort, setSort] = useState("created");
+  const [dismissedSuggestions, setDismissedSuggestions] = useState<string[]>(
+    [],
+  );
   const [error, setError] = useState<string | null>(null);
   const view = useSyncExternalStore(subscribeView, preferredView, serverView);
   const createButton = useRef<HTMLButtonElement>(null);
@@ -234,27 +225,89 @@ export function Dashboard() {
   }
 
   return (
-    <WorkspaceShell>
-      <div className="p-5 md:p-8">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-medium tracking-tight">My forms</h1>
-            <p className="mt-2 text-sm text-text-muted">
-              {session.data?.workspace_name ?? "My workspace"}
-              <span className="mx-2 text-border" aria-hidden="true">
-                /
-              </span>
-              Private to this browser
-            </p>
+    <WorkspaceShell
+      onCreate={openCreate}
+      createRef={createButton}
+      disabled={!workspaceId || busy}
+      search={search}
+      onSearch={setSearch}
+      formCount={allForms.length}
+      responses={allForms.reduce(
+        (total, form) => total + form.response_count,
+        0,
+      )}
+    >
+      <div className="p-5 md:px-10 md:py-12 2xl:px-[52px]">
+        <div className="flex flex-wrap items-center justify-between gap-5 border-b border-[#e3e1e6] pb-6">
+          <div className="flex flex-wrap items-center gap-4">
+            <h1 className="text-[28px] font-normal tracking-tight">
+              My workspace
+            </h1>
+            <button
+              aria-label="Workspace options"
+              onClick={() =>
+                notify("Your workspace is private to this browser.")
+              }
+              className="rounded-md p-1 hover:bg-[#ececef]"
+            >
+              <MoreHorizontal size={21} />
+            </button>
+            <button
+              onClick={() =>
+                notify(
+                  "Team invitations are coming soon. Public form sharing is available after publishing.",
+                )
+              }
+              className="flex items-center gap-2 text-base text-[#6d6573]"
+            >
+              <UserPlus size={21} />
+              Invite
+            </button>
+            <span
+              className="hidden rounded-full border border-[#b9e4dc] p-1.5 text-[#087c6a] sm:inline-flex"
+              aria-hidden="true"
+            >
+              <Sparkles size={17} />
+            </span>
           </div>
-          <Button
-            ref={createButton}
-            onClick={openCreate}
-            disabled={!workspaceId || busy}
-          >
-            <Plus size={16} aria-hidden="true" />
-            Create a form
-          </Button>
+          <div className="flex flex-wrap items-center gap-4">
+            <label className="flex h-10 items-center gap-2 rounded-xl border border-[#e2dfe4] bg-white px-3 text-[#6d6573]">
+              <CalendarDays size={20} aria-hidden="true" />
+              <select
+                aria-label="Sort forms"
+                value={sort}
+                onChange={(event) => setSort(event.target.value)}
+                className="min-w-0 bg-transparent text-sm outline-offset-2"
+              >
+                <option value="created">Date created</option>
+                <option value="updated">Last updated</option>
+                <option value="name">Name</option>
+              </select>
+            </label>
+            <div
+              className="flex overflow-hidden rounded-xl border border-[#e2dfe4] bg-white"
+              aria-label="Form view"
+            >
+              <button
+                aria-label="List view"
+                aria-pressed={view === "list"}
+                onClick={() => setView("list")}
+                className={`flex h-10 items-center gap-2 px-3 text-sm ${view === "list" ? "bg-[#ececef]" : "text-[#6d6573]"}`}
+              >
+                <List size={20} />
+                List
+              </button>
+              <button
+                aria-label="Grid view"
+                aria-pressed={view === "grid"}
+                onClick={() => setView("grid")}
+                className={`flex h-10 items-center gap-2 px-3 text-sm ${view === "grid" ? "bg-[#ececef]" : "text-[#6d6573]"}`}
+              >
+                <LayoutGrid size={19} />
+                Grid
+              </button>
+            </div>
+          </div>
         </div>
         {session.isPending ? (
           <WorkspaceLoading />
@@ -278,61 +331,63 @@ export function Dashboard() {
           />
         ) : (
           <>
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-5">
-              <label className="relative flex min-w-0 basis-full items-center sm:max-w-xs sm:flex-1 sm:basis-auto">
-                <Search
-                  size={16}
-                  className="pointer-events-none absolute left-3 text-text-muted"
-                  aria-hidden="true"
-                />
-                <input
-                  aria-label="Search forms"
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Search forms"
-                  className="min-h-10 w-full rounded-lg border border-border bg-surface py-2 pr-3 pl-9 text-sm outline-offset-2"
-                />
-              </label>
-              <div className="flex items-center gap-2">
-                <select
-                  aria-label="Sort forms"
-                  value={sort}
-                  onChange={(event) => setSort(event.target.value)}
-                  className="min-h-10 rounded-lg border border-border bg-surface px-3 text-xs"
-                >
-                  <option value="updated">Last updated</option>
-                  <option value="created">Date created</option>
-                  <option value="name">Name</option>
-                </select>
-                <div
-                  className="flex rounded-lg border border-border bg-surface p-1"
-                  aria-label="Form view"
-                >
-                  <button
-                    aria-label="List view"
-                    aria-pressed={view === "list"}
-                    onClick={() => setView("list")}
-                    className={`flex size-8 items-center justify-center rounded-md ${view === "list" ? "bg-surface-muted" : "text-text-muted"}`}
+            <div className="mt-8 mb-10 grid gap-5 xl:grid-cols-2">
+              {[
+                {
+                  id: "feedback",
+                  title: "Product feedback",
+                  copy: "Gather thoughtful feedback and learn what your customers need.",
+                },
+                {
+                  id: "event",
+                  title: "Event registration",
+                  copy: "Bring your next event to life with a simple registration form.",
+                },
+              ]
+                .filter((item) => !dismissedSuggestions.includes(item.id))
+                .map((item) => (
+                  <div
+                    key={item.id}
+                    className="relative flex min-h-[140px] items-start gap-4 rounded-xl bg-[#fdfbff] p-5 pr-12"
                   >
-                    <List size={16} />
-                  </button>
-                  <button
-                    aria-label="Grid view"
-                    aria-pressed={view === "grid"}
-                    onClick={() => setView("grid")}
-                    className={`flex size-8 items-center justify-center rounded-md ${view === "grid" ? "bg-surface-muted" : "text-text-muted"}`}
-                  >
-                    <LayoutGrid size={15} />
-                  </button>
-                </div>
-              </div>
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#f6edff] text-[#a15bbb]">
+                      <Sparkles size={22} aria-hidden="true" />
+                    </span>
+                    <div>
+                      <p className="text-base leading-6">{item.copy}</p>
+                      <button
+                        disabled={busy}
+                        onClick={(event) => {
+                          openCreate();
+                          returnFocus.current = event.currentTarget;
+                          setName(item.title);
+                        }}
+                        className="mt-4 rounded-lg border border-[#e2dfe4] bg-white px-2.5 py-1 text-sm font-medium text-[#6d6573]"
+                      >
+                        Create form
+                      </button>
+                    </div>
+                    <button
+                      aria-label={`Dismiss ${item.title} suggestion`}
+                      onClick={() =>
+                        setDismissedSuggestions((current) => [
+                          ...current,
+                          item.id,
+                        ])
+                      }
+                      className="absolute top-6 right-5 text-[#6d6573]"
+                    >
+                      <X size={21} />
+                    </button>
+                  </div>
+                ))}
             </div>
             {allForms.some(
               (form) =>
                 form.seed_response_count > 0 ||
                 form.title.startsWith("Sample:"),
             ) && (
-              <p className="my-5 text-xs leading-5 text-text-muted">
+              <p className="mb-4 text-xs leading-5 text-text-muted">
                 Start with a sample, or make something your own. Sample forms
                 and responses use synthetic data.
               </p>
@@ -405,15 +460,16 @@ export function Dashboard() {
                 {view === "list" && (
                   <div
                     aria-hidden="true"
-                    className="mb-2 hidden grid-cols-[minmax(0,1fr)_100px_100px_120px_40px] items-center gap-4 px-5 text-xs text-text-muted xl:grid"
+                    className="mb-2 hidden grid-cols-[minmax(0,1fr)_95px_95px_120px_100px_40px] items-center gap-4 px-3 text-sm text-text-muted xl:grid"
                   >
                     <span>
                       {filtered.length}{" "}
                       {filtered.length === 1 ? "form" : "forms"}
                     </span>
-                    <span>Status</span>
                     <span>Responses</span>
+                    <span>Completed</span>
                     <span>Updated</span>
+                    <span>Integrations</span>
                     <span />
                   </div>
                 )}
@@ -429,12 +485,12 @@ export function Dashboard() {
                     <li
                       key={form.id}
                       data-testid="form-card"
-                      className={`group rounded-xl border border-border bg-surface transition-shadow hover:shadow-sm ${view === "grid" ? "flex min-h-52 flex-col p-5" : "grid grid-cols-[minmax(0,1fr)_40px] items-center gap-4 px-4 py-3 xl:grid-cols-[minmax(0,1fr)_100px_100px_120px_40px] xl:px-5"}`}
+                      className={`group rounded-2xl border border-[#e2dfe4] bg-surface transition-shadow hover:shadow-sm ${view === "grid" ? "flex min-h-52 flex-col p-5" : "grid grid-cols-[minmax(0,1fr)_40px] items-center gap-4 px-3 py-2.5 xl:grid-cols-[minmax(0,1fr)_95px_95px_120px_100px_40px] xl:px-3"}`}
                     >
                       <div
                         className={`flex min-w-0 items-start gap-3 ${view === "grid" ? "flex-1" : "items-center"}`}
                       >
-                        <FormMark title={form.title} />
+                        <WorkspaceCover />
                         <div className="min-w-0">
                           <Link
                             href={`/forms/${form.id}/build`}
@@ -444,9 +500,9 @@ export function Dashboard() {
                             {form.title || "Untitled form"}
                           </Link>
                           {view === "list" && (
-                            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-text-muted xl:hidden">
+                            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-text-muted">
                               <Status published={form.is_published} />
-                              <span>
+                              <span className="xl:hidden">
                                 {form.response_count} responses
                                 {form.seed_response_count > 0
                                   ? ` · ${form.seed_response_count} sample`
@@ -475,9 +531,6 @@ export function Dashboard() {
                         </div>
                       ) : (
                         <>
-                          <div className="hidden xl:block">
-                            <Status published={form.is_published} />
-                          </div>
                           <div className="hidden text-sm xl:block">
                             {form.response_count}
                             {form.seed_response_count > 0 && (
@@ -486,12 +539,30 @@ export function Dashboard() {
                               </span>
                             )}
                           </div>
+                          <span
+                            className="hidden text-sm text-text-muted xl:block"
+                            title="Completion-rate tracking is coming soon"
+                          >
+                            —
+                          </span>
                           <time
                             dateTime={form.updated_at}
-                            className="hidden text-xs text-text-muted xl:block"
+                            className="hidden text-sm text-text-muted xl:block"
                           >
                             {updatedDate(form.updated_at)}
                           </time>
+                          <div className="hidden xl:block">
+                            <button
+                              aria-label={`Integrations for ${form.title}`}
+                              title="Integrations — coming soon"
+                              onClick={() =>
+                                notify("Integrations are coming soon.")
+                              }
+                              className="flex size-8 items-center justify-center rounded-lg border border-[#e2dfe4] bg-white text-[#6d6573]"
+                            >
+                              <Blocks size={20} />
+                            </button>
+                          </div>
                           <FormActions
                             form={form}
                             disabled={busy}

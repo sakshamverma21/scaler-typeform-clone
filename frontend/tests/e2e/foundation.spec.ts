@@ -6,7 +6,7 @@ test("browser cookie survives reload through the real Next.js rewrite", async ({
 }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "My forms", exact: true }),
+    page.getByRole("heading", { name: "My workspace", exact: true }),
   ).toBeVisible();
   await expect(page.getByTestId("connection-status")).toContainText(
     "Connected",
@@ -45,7 +45,7 @@ for (const width of [360, 390, 768, 1280, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/forms");
     await expect(
-      page.getByRole("heading", { name: "My forms", exact: true }),
+      page.getByRole("heading", { name: "My workspace", exact: true }),
     ).toBeVisible();
     await expect(page.getByTestId("connection-status")).toContainText(
       "Connected",
@@ -117,7 +117,7 @@ test("slow readiness keeps the workspace visible and announces loading", async (
   });
   await page.goto("/forms");
   await expect(
-    page.getByRole("heading", { name: "My forms", exact: true }),
+    page.getByRole("heading", { name: "My workspace", exact: true }),
   ).toBeVisible();
   await expect(page.getByTestId("connection-status")).toContainText(
     "Connecting",
