@@ -1,6 +1,8 @@
 # Typeform Clone — Scaler SDE Fullstack assignment
 
-A Typeform-inspired application using Next.js/TypeScript, FastAPI, and SQLite. Development proceeds in reviewed phases. **Current scope: Phase 4 builder and live preview, locally verified with focused checks.** The API supports isolated demo workspaces, form management, all eight question types, versioned publication, anonymous submissions, response history, and statistics. The real dashboard supports create/rename/duplicate/delete, list/grid, search/sort, sample labels, response counts and loading/error recovery. The builder edits all eight question types with serialized autosave, drag ordering and conflict/recovery states. Interactive desktop/mobile preview uses shared answer controls and never collects responses. Public respondent/sharing and results interfaces remain later phases. No bonus is implemented.
+A Typeform-inspired application using Next.js/TypeScript, FastAPI and SQLite. Creator workflows include browser-private demo workspaces, form CRUD, eight question types, drag ordering, autosave/recovery, preview, publishing and public sharing. Anonymous respondents use a one-question flow with keyboard navigation, validation and confirmed submission. Results provide paginated submissions, original individual answers, publication-version filtering and per-question distributions/numeric summaries. No bonus is implemented.
+
+Latest remaining screens were shipped under an explicit ten-minute deadline: production build/types and targeted lint passed, with one real browser publish → anonymous submit → results/detail/summary → unpublish check. Earlier builder/dashboard/API verification is recorded in IMPLEMENTATION_PLAN.md. Comprehensive release QA and live rollout verification remain pending; do not interpret the focused checks as exhaustive verification.
 
 User-reported deployments: [frontend](https://scaler-typeform-clone-saksham.vercel.app) and [backend](https://scaler-typeform-api-0n2q.onrender.com). Source shipping does not imply that the latest revision is already live; allow connected deployments to rebuild and verify them separately. The external ping is pending; see [deployment evidence](DEPLOYMENT.md#deployment-status--2026-10-09).
 
@@ -160,3 +162,16 @@ Shipping evidence — 2026-10-09: `git push origin main` succeeded for [f74e30f]
 Build/strict types and targeted lint/format passed. `node node_modules/vitest/vitest.mjs run tests/unit/draft-store.test.ts`: **3 passed**; `npm run test:e2e -- builder.spec.ts`: **2 passed**. Real editing/reload/reorder, all eight preview types, zero responses, failure/retry/recovery, stale-tab protection and empty/mobile builder were exercised. Broader QA remains deferred. Theme/ending customization and advanced logic/integrations are explicit placeholders; no bonus is completed.
 
 Draft edits save after about 600ms and remain separate from the public version. A save failure retains edits and offers retry. Another tab's changes produce a conflict; reloading the saved version explicitly discards local edits. A browser-tab recovery prompt offers restore/discard after interrupted saving. Recovery is temporary and cannot recover an expired/deleted creator cookie or a lost Render database.
+
+
+## Five-minute evaluator walkthrough
+
+1. Open the workspace; synthetic sample forms already contain responses. Each browser has its own creator workspace.
+2. Create a form, add/edit questions, drag to reorder and use Preview; preview never stores a response.
+3. Open Share in the builder, publish the saved draft and copy/open the public link in another browser.
+4. Complete the form and wait for the confirmed thank-you screen. Open Results to view the submission, its original answers and Response summary.
+5. Unpublish through Share; new public submissions are rejected. Existing responses remain readable.
+
+## Submission limitations
+
+Render Free uses ephemeral SQLite: application restart/redeployment can lose user-created data. An external ping can reduce idle delays but cannot provide durability. Samples are seeded once per new workspace, never as a refresh reset. No full creator login/recovery, branching, file upload, partial-response/completion-rate tracking, custom theme editing, integrations or team collaboration is implemented. Appropriate sections show placeholders. The repository is currently private and must be made public by the owner before assignment submission. See SUBMISSION_NOTES.md for transparent submission-field wording.

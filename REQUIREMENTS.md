@@ -199,3 +199,7 @@ M04 is implemented and tested for pointer last-to-first order, cancelled keyboar
 ### Dashboard fidelity correction — 2026-10-09
 
 M28 received a focused correction against the user's supplied workspace screenshot: full-width header/tabs/banner, broad sidebar, suggestion cards and compact rows. Existing M10/M12/M13/M32 dashboard behavior was rechecked using the two passing real Chromium dashboard tests; build/types/lint also passed. Actual desktop/mobile screenshots were inspected and mobile overflow checked. This does not verify whole-application visual parity, full accessibility, cloud rollout or later-phase workflows. See the correction record in IMPLEMENTATION_PLAN.md.
+
+### Expedited public/share/results evidence — 2026-10-09
+
+M14/M15/M17/M21–M26 now have actual UI implementations backed by existing Phase 2 services. One real local Chromium check passed: publication, anonymous required validation and persisted submission, thank-you, response row/original individual answers, text answered/skipped summary, closure/unavailable link. M06/M19/public type/keyboards, idempotency failure matrices, full version/aggregate UI fixtures and comprehensive responsive/accessibility/visual review retain partial coverage. Build/types/lint passed; no whole-release or cloud durability status promoted merely from that result. User explicitly authorized combined essential delivery within ten minutes. README/notes updated; repository public-access and deployed rollout still pending.

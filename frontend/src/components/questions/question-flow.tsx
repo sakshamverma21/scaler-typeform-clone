@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, type CSSProperties } from "react";
 import { ArrowDown, ArrowUp, ArrowRight, Check, RotateCcw } from "lucide-react";
 import type { DraftDefinition } from "@/lib/api/forms";
+import { ApiError } from "@/lib/api/client";
 import { AnswerControl } from "./answer-control";
 import {
   hasAnswer,
@@ -110,6 +111,13 @@ export function QuestionFlow({
       await onComplete(normalized);
       setCompleted(true);
     } catch (failure) {
+      if (failure instanceof ApiError) {
+        const issue = failure.errors.find((item) => item.question_key);
+        const index = questions.findIndex(
+          (item) => item.question_key === issue?.question_key,
+        );
+        if (index >= 0) setPosition(index);
+      }
       setError(
         failure instanceof Error
           ? failure.message

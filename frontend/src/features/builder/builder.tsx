@@ -303,7 +303,11 @@ function BuilderEditor({
             (item) => (
               <button
                 key={item}
-                onClick={() => setPanel(item)}
+                onClick={() =>
+                  item === "share" || item === "results"
+                    ? void navigate(`/forms/${initial.form.id}/${item}`)
+                    : setPanel(item)
+                }
                 className="py-2 text-text-muted hover:text-text"
               >
                 {item[0].toUpperCase() + item.slice(1)}

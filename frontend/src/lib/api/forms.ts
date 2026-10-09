@@ -94,6 +94,7 @@ export const publicApi = {
   form: (slug: string) =>
     apiRequest<Schemas["PublicForm"]>(
       `/api/v1/public/forms/${encodeURIComponent(slug)}`,
+      { signal: AbortSignal.timeout(90_000) },
     ),
   submit: (slug: string, body: SubmitResponse) =>
     apiRequest<Schemas["SubmissionReceipt"]>(
