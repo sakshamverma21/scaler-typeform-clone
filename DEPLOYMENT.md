@@ -1,6 +1,6 @@
 # Phase 1 deployment handoff
 
-The user will take over Vercel deployment. The working repository is private by request; it must become public before the assignment submission. No live deployment is implied by these configuration files. Record actual URLs and evidence in IMPLEMENTATION_PLAN.md after deployment.
+The user will take over Vercel deployment. The [working repository](https://github.com/sakshamverma21/scaler-typeform-clone) is private by request; it must become public before the assignment submission. Phase 1 source and deployment configuration are pushed to `main`. No live deployment is implied by these configuration files. Record actual URLs and evidence in IMPLEMENTATION_PLAN.md after deployment.
 
 ## Render backend
 

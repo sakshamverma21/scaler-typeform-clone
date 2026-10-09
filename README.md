@@ -2,7 +2,7 @@
 
 A Typeform-inspired application using Next.js/TypeScript, FastAPI, and SQLite. Development proceeds in reviewed phases. **Current scope: Phase 1 foundation.** Form CRUD, the builder, publishing, submissions, sample forms, and results are not implemented yet. Live deployment is pending the user's Vercel handoff and Render setup.
 
-The repository is private during development by user request. The assignment requires a public repository at submission time.
+The [GitHub repository](https://github.com/sakshamverma21/scaler-typeform-clone) is private during development by user request. The assignment requires a public repository at submission time.
 
 ## Run locally
 
