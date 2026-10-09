@@ -10,7 +10,7 @@ Resolved versions include Next.js 16.4.0, React 19.3.0, TypeScript 5.9.3, Tailwi
 
 Native/browser testing and production Docker builds are separate evidence. Browser tests use a real standalone artifact and dedicated ports 13000/18080; a runner builds the correct rewrite first. Compose exposes only frontend port 3000 and reaches backend:8000 internally, avoiding a conflict with an existing unrelated local Docker service. Startup copies static assets for native standalone execution just as the container does.
 
-The working GitHub repository is private by the user's latest instruction; public visibility remains a submission requirement. The user will take over Vercel deployment. [DEPLOYMENT.md](DEPLOYMENT.md) specifies the remaining Render/Vercel steps and HTTPS cookie/restart gate. Local success is not substituted for deployed evidence.
+The working GitHub repository is private by the user's instruction; public visibility remains a submission requirement. The user will take over Vercel deployment. On 2026-10-09 they selected Render Free + an external minutely ping, superseding the paid disk proposal. [DEPLOYMENT.md](DEPLOYMENT.md) specifies setup and the revised HTTPS cookie/reload/ping gate. Local success is not substituted for deployed evidence.
 
 ## Selected stack and tradeoffs
 
@@ -24,7 +24,7 @@ The working GitHub repository is private by the user's latest instruction; publi
 | Server data | TanStack Query | Fetch state, invalidation, mutation lifecycle; local edits do not wait for server round trips. |
 | Local state | Feature-local reducers and React context | Explicit builder and respondent state machines without an additional global store. |
 | Backend | FastAPI, Pydantic 2, SQLAlchemy 2, Alembic | Typed contracts, OpenAPI, relational control, migrations. Synchronous database sessions and ordinary synchronous FastAPI endpoints keep SQLite behavior straightforward. |
-| Database | SQLite, relational schema below | Assignment requirement; one modest application instance, short transactions, durable disk. |
+| Database | SQLite, relational schema below | Assignment requirement; one instance and short transactions. Local volume is durable; the selected Render Free demo filesystem is ephemeral. |
 | Tests | pytest/HTTPX; Vitest/Testing Library; Playwright | Real API/database tests, focused component tests, integrated browser workflows. |
 
 FastAPI is preferred over Django because a custom frontend and focused API are central; Django's admin and account system would add little to this selected demo model. Do not introduce microservices, background queues, WebSockets, generic repository frameworks, event sourcing, or a charting library for simple summary bars.
@@ -39,7 +39,7 @@ flowchart LR
   Respondent[Anonymous respondent] --> Next
   Next --> API[FastAPI routers]
   API --> Services[Form / Publishing / Submission / Results services]
-  Services --> DB[(SQLite on persistent disk)]
+  Services --> DB[(SQLite: local volume / ephemeral Render demo)]
   Preview[Local interactive preview] --> Renderer[Shared question presentation]
   Respondent --> Renderer
 ```
@@ -232,14 +232,18 @@ Issue a cryptographically random opaque cookie, store only its hash, and use a 3
 
 Enforce an allowed origin on creator writes. Public endpoints do not require creator cookies. Cookie deletion/expiry means a new workspace through the UI; account recovery and cross-device access are intentionally absent. Explain this in the README and demo interface. Isolation is an approved user choice, not a complete account system.
 
-## Deployment and durable storage
+## Deployment and storage
 
-Target: Next.js on Vercel; FastAPI on a paid Render service with a persistent disk. The browser calls same-origin `/api/v1`; a fixed external rewrite forwards to the configured backend. Validate cookie forwarding, Set-Cookie attributes, origins, HTTPS, and uncacheable creator data in Phase 1 before building on this arrangement. [Next.js rewrites](https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites).
+**User-directed revision, 2026-10-09:** Next.js on Vercel; FastAPI on Render Free with an external GET ping every minute. This replaces the original paid Render persistent disk proposal. `render.yaml` selects Free, no disk, and SQLite at `/app/data/typeform.sqlite3`. Keep one instance and one Uvicorn worker; apply migrations at runtime before readiness. The user expects a 20–30 minute evaluation and accepts the ephemeral demo limitation; neither that duration nor uninterrupted operation is guaranteed.
 
-SQLite path: `/var/data/typeform.sqlite3` on Render's attached disk. Run migrations at runtime before readiness; the disk is not available during build or pre-deploy commands. Start with one instance and one Uvicorn worker. Document brief deployment downtime and the single-instance scaling limitation. [Render persistent disks](https://render.com/docs/disks).
+The browser calls same-origin `/api/v1`; a fixed external rewrite forwards to the configured backend. Validate cookie forwarding, Set-Cookie attributes, exact allowed origins, HTTPS, uncacheable data, and same-instance reload continuity. [Next.js rewrites](https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites). The external job targets `/api/v1/health/live` only; no sessions, seed writes, or response submissions. See [DEPLOYMENT.md](DEPLOYMENT.md) for steps and evidence.
+
+**Durability boundary:** The ping addresses idle sleep, not data retention. Render Free may replace the filesystem on restart, redeploy, or spin-down. Across browser sessions, SQLite persists while its file/instance exists; it is not durable deployed storage. M16/M27/M38 retain their original acceptance criteria and this recorded gap. Do not describe the ping as a backup or mark deployed restart persistence verified. [Render Free](https://render.com/docs/free). A paid disk remains an optional future migration, not a prerequisite the user must purchase now.
+
+Seed each fresh workspace transactionally once. Refresh/startup must not reset existing work or resurrect deleted samples. A lost database may receive new synthetic examples when a new workspace is initialized; those examples do not restore user edits or responses. This remains Phase 2 implementation.
 
 Use rollback-journal mode, foreign keys enabled on every connection, a five-second busy timeout, and short transactions. Do not enable WAL or multiple workers casually without new evidence and tests. Use SQLite's backup API for consistent backups; verify restoration into a separate database. Do not copy a live database file as a backup procedure. [SQLite backup API](https://sqlite.org/backup.html).
 
 Provide Docker Compose with a named database volume for local operation, important because the checkout is inside OneDrive. Native setup must accept a configurable database path outside actively synced files. Environment documentation will include database path, frontend/backend origins, API rewrite destination, session settings, and production flags; no secrets or live databases belong in Git.
 
-Phase 0 does not provision accounts, buy hosting, create a public repository, or claim deployment. Phase 1 must prove the actual deployed cookie path and restart persistence, or explicitly remain incomplete pending external access. Phase 7 repeats persistence after real redeployment and backup restoration with application data.
+Phase 0 did not provision accounts, buy hosting, or claim deployment. Under the revised Phase 1 gate, cloud restart/redeploy survival is waived by the user; actual HTTPS cookie/reload and scheduled-ping evidence is still pending. Phase 7 verifies application persistence locally and reports the selected demo's deployed durability gap explicitly, rather than marking the original OPS-PERSIST criterion wholly passed.

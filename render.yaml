@@ -8,18 +8,15 @@ services:
       paths:
         - backend/**
         - render.yaml
-    plan: starter
+    # User-selected demo hosting. This filesystem is ephemeral, not durable storage.
+    plan: free
     numInstances: 1
     healthCheckPath: /api/v1/health/ready
-    disk:
-      name: typeform-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: TYPEFORM_ENVIRONMENT
         value: production
       - key: TYPEFORM_DATABASE_PATH
-        value: /var/data/typeform.sqlite3
+        value: /app/data/typeform.sqlite3
       - key: TYPEFORM_ALLOWED_ORIGINS
         sync: false
       - key: TYPEFORM_FOUNDATION_PROBE_ENABLED

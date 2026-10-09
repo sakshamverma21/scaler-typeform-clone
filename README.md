@@ -58,7 +58,7 @@ Open localhost:3000. SQLite uses a named volume mounted at `/var/data`. Normal s
 | API_BACKEND_URL | Frontend, server/build only | http://127.0.0.1:8000 | Fixed API rewrite destination; production uses Render HTTPS origin. |
 | NEXT_PUBLIC_FOUNDATION_PROBE_ENABLED | Frontend build | true in example | Temporary Connection check UI; disable before release. |
 | TYPEFORM_ENVIRONMENT | Backend | development | Production requires HTTPS origins and Secure cookies. |
-| TYPEFORM_DATABASE_PATH | Backend | ./data/typeform.sqlite3 | Native absolute unsynced path recommended; deployment `/var/data/typeform.sqlite3`. |
+| TYPEFORM_DATABASE_PATH | Backend | ./data/typeform.sqlite3 | Native unsynced path recommended; Render Free `/app/data/typeform.sqlite3` is ephemeral; Compose uses durable `/var/data/typeform.sqlite3`. |
 | TYPEFORM_ALLOWED_ORIGINS | Backend | ["http://localhost:3000"] | Explicit origin list for writes; no wildcards/trailing slash. |
 | TYPEFORM_FOUNDATION_PROBE_ENABLED | Backend | false unless explicitly enabled | Temporary probe endpoint; examples/Compose/Blueprint enable it for evidence. |
 | TYPEFORM_SESSION_DAYS | Backend | 30 | Probe cookie lifetime; bounded 1–90 days. |
@@ -123,7 +123,7 @@ Commit both lockfiles after relevant tests pass. Regenerate OpenAPI then TypeScr
 
 ## Deployment, assumptions, and references
 
-[DEPLOYMENT.md](DEPLOYMENT.md) contains the private-repository→Render→Vercel handoff and exact live verification gate. Persistent SQLite storage, HTTPS cookie forwarding, and deployed restart/redeploy survival must still be verified on real hosts. One backend instance/worker is intentional, with brief deployment downtime possible.
+[DEPLOYMENT.md](DEPLOYMENT.md) contains exact Render Free → Vercel → external minutely ping steps and the revised live verification gate. On 2026-10-09 the user selected this ephemeral demo hosting instead of a paid SQLite disk. HTTPS cookie forwarding, reload continuity, and actual cron calls still need live verification. A ping reduces idle sleeping; it does not make SQLite durable after instance replacement. The original deployed durability criteria remain a documented gap. One backend instance/worker is intentional. Local Compose retains its separately verified durable volume.
 
 [ASSUMPTIONS.md](ASSUMPTIONS.md) distinguishes approved choices, placeholders, research limits, seed plans, and actual implementation facts. No synthetic forms/responses have been inserted yet; all six bonuses remain unimplemented. The final Assumptions / Mocked Data / Notes field will contain only verified release facts.
 

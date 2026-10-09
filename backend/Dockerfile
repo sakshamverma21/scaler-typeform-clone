@@ -6,5 +6,5 @@ RUN pip install --no-cache-dir --require-hashes -r requirements.lock
 COPY app ./app
 COPY migrations ./migrations
 COPY alembic.ini .
-# The disk is available at runtime; the app migrates before becoming ready.
+# Apply migrations at runtime before readiness, using the configured database path.
 CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1"]

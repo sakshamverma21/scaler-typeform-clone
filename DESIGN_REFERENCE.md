@@ -27,6 +27,14 @@ Direct official image references from the planning inventory, useful for later s
 
 These are reference links, not copied product assets or a local screenshot archive. If an attachment moves, use its official parent article and record the replacement. Do not substitute screenshots from existing clone repositories.
 
+## Authorized signed-in reference capture
+
+On 2026-10-09 the user authorized inspection of their Chrome Typeform workspace and screenshots of assignment-relevant UI, avoiding private respondent data. The exact tab URL was provided in the conversation; its account/workspace identifiers are intentionally omitted here.
+
+**Actual outcome:** Browser and native computer-use initialization failed before account access: `failed to write kernel assets: The system cannot find the path specified. (os error 3)`, including a tool reset/retry. No authenticated screen was inspected, button operated, or screenshot saved. This is a tool runtime failure, not an outstanding permission request.
+
+[Local capture index](docs/design-reference/README.md) defines the screenshot location and pending views. Once access works, add actual images, dates, viewport/state metadata, and observed interactions there, then link them beside R01–R08. Never substitute invented screenshots or infer live behavior from an unobserved screen. Public-reference research above remains the current evidence.
+
 ## Evidence limitations
 
 - No authenticated creator account was operated. Official screenshots are evidence for creator layout, not proof of measured live drag/hover behavior.

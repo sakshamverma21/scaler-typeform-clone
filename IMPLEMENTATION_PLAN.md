@@ -9,7 +9,7 @@ Read [AGENTS.md](AGENTS.md), [REQUIREMENTS.md](REQUIREMENTS.md), [ARCHITECTURE.m
 | Phase | Scope | Status | Gate / evidence |
 |---|---|---|---|
 | 0 | Persist and freeze approved plan | Verified | DOCS-PLAN passed on 2026-10-09; see Phase 0 verification record. |
-| 1 | Foundation and deployment proof | In progress — local verified; live gate pending | Local implementation/tests complete on 2026-10-09; user takes over Vercel. See Phase 1 verification record. |
+| 1 | Foundation and deployment proof | In progress — local verified; revised live gate pending | User selected Render Free + minutely ping on 2026-10-09; HTTPS cookie/reload/ping checks pending. See Phase 1 verification record. |
 | 2 | Schema, core services, sessions, seeds | Not started | Requires Phase 1. |
 | 3 | Workspace management | Not started | Requires Phase 2. |
 | 4 | Complete builder and preview | Not started | Requires Phase 3. |
@@ -18,6 +18,8 @@ Read [AGENTS.md](AGENTS.md), [REQUIREMENTS.md](REQUIREMENTS.md), [ARCHITECTURE.m
 | 7 | Release hardening and submission preparation | Not started | Requires Phase 6; mandatory release gate. |
 
 Last fully completed phase: **0**. Current phase: **1 — Foundation and deployment proof**. Local implementation is verified and ready for review; the user has retained Vercel deployment responsibility, so the live gate remains pending. Phase 2 has not started. No application implementation was included in Phase 0.
+
+**Approved hosting revision, 2026-10-09:** Use Vercel + Render Free + an external minutely health ping. The user accepts ephemeral SQLite for an expected short evaluation and waived cloud restart/redeploy survival checks for this demo handoff. The gate now requires live HTTPS cookie/origin/no-store checks, same-instance reload continuity/isolation, and actual scheduled calls. Keep local durable-volume evidence and the original M16/M27/M38 persistence criteria separate: deployed durability remains a documented gap, not a passed check. See [DEPLOYMENT.md](DEPLOYMENT.md) and A32–A34 in ASSUMPTIONS.md.
 
 Indicative allowance from the approved plan: **35–43 implementation hours plus 6–8 hours contingency/refinement**, before the full bonus backlog. This is an estimate, not a promise or deadline. The assignment's approximately 24-hour guidance is separate; the actual externally communicated deadline is unknown.
 
@@ -48,17 +50,17 @@ Indicative allowance from the approved plan: **35–43 implementation hours plus
 - BUILD: clean dependency installation, lint/type checks, production frontend build, backend import/config/health checks.
 - Real browser reaches health through `/api/v1`; allowed-origin configuration and cookie round-trip work on localhost and HTTPS deployment.
 - Database readiness is false until runtime migration succeeds; health does not disclose secrets.
-- OPS-PERSIST foundation probe: create a uniquely identified record, restart the deployed backend, verify the record remains. Named local volume also survives restart.
+- Local OPS-PERSIST foundation probe: record survives process/volume restart; already verified. Revised live demo check: record survives reload and more than 15 minutes with successful minutely pings on the same instance. Cloud restart/redeploy survival is waived, not verified.
 - A styled shell at desktop/mobile widths demonstrates the visual foundation; loading and failure states are not blank screens.
 - CI runs meaningful available checks; README reproduces local startup from documented environment variables.
 
-**Risks / edges:** Missing hosting credentials, disk mounted at wrong path, cookies set for the backend domain instead of frontend, accidental caching of session data, rewrite path mismatches, OneDrive database interference, migrations running at build time. Investigate access early. Prepare reviewable deployment configuration before asking for any genuinely missing external authorization. Paid-host acceptance is not permission to invent credentials or purchases.
+**Risks / edges:** Missing hosting URL/account access, Free instance data replacement, cookies set for the backend domain instead of frontend, accidental caching, rewrite mismatches, OneDrive database interference, migrations at build time, and cron failures during wake-up. Verify the deployment steps and scheduled requests. Do not introduce paid resources or claim cron provides durability.
 
-**Gate:** A local build is not deployment proof. If external access prevents HTTPS cookie/restart checks, leave this phase incomplete with exact missing evidence; do not claim deployed durability. The user's Phase 1 instruction delegates Vercel deployment to them and requests a private working repository. Stop after the locally verified implementation and deployment handoff; retain the live gate as pending. Do not proceed to Phase 2 automatically.
+**Gate:** A local build is not deployment proof. If HTTPS cookie/reload/origin checks or actual cron history are missing, leave the revised demo gate pending with exact missing evidence. Do not claim deployed durability. The user retains Vercel responsibility and requested a private working repository. Stop for review/handoff; do not proceed to Phase 2 automatically.
 
 ## Phase 2 — Data model and core services
 
-**Dependencies:** Phase 1 persistence/proxy foundation.
+**Dependencies:** Phase 1 proxy/local persistence foundation and revised live demo gate, or explicit user authorization to defer missing live checks. No cloud durability assumption may be introduced by Phase 2.
 
 **Modules / changes:** `backend/app/db/models`, migration revisions, Pydantic contracts, API routers/session dependencies, form/publishing/submission/results services, `seed.py`, file-backed pytest fixtures, generated frontend API types/fetch wrapper. Implement all eight baseline tables and their constraints/indexes. Add browser-specific session bootstrap and transactional seed initialization.
 
@@ -147,9 +149,9 @@ Indicative allowance from the approved plan: **35–43 implementation hours plus
 
 **Modules / changes:** Complete browser suites and CI, deterministic visual baselines, accessibility review, deployment fixes, backup/restore procedure, README/ER diagram/API docs, public repository readiness, evaluator walkthrough, final notes draft derived from facts.
 
-**Acceptance / tests:** Run the full verification catalog applicable to mandatory requirements. Critical workflows in Chromium; respondent smoke in Firefox and WebKit. Widths 360/390/768/1280/1440 and 200% zoom; physical-phone software keyboard; reduced motion and keyboard-only operation. Real restart, redeploy, backup restore with recorded form/response IDs. Fresh-clone setup. Signed-out repository access, HTTPS app/public URLs, no committed secrets/live data. Manual comparison of all five principal surfaces.
+**Acceptance / tests:** Run the full verification catalog applicable to mandatory requirements. Critical workflows in Chromium; respondent smoke in Firefox and WebKit. Widths 360/390/768/1280/1440 and 200% zoom; physical-phone software keyboard; reduced motion and keyboard-only operation. Local restart/container recreation and backup restore with recorded form/response IDs. For selected Render Free hosting, verify live workflows and same-instance continuity; retain cloud restart/redeploy durability as an accepted, disclosed gap rather than a passing test. Fresh-clone setup. Signed-out repository access, HTTPS app/public URLs, no committed secrets/live data. Manual comparison of all five principal surfaces.
 
-**Mandatory release gate:** Zero unresolved mandatory workflow failures, zero unexplained data discrepancies, no obvious layout/focus defects. Required persistence/deployment evidence must exist. Each mandatory requirement's entire acceptance criterion is verified or a real gap remains; “build passes” is not completion. M41 requires the user's actual code walkthrough, not an agent assertion that the candidate understands it.
+**Mandatory release gate:** Zero unresolved mandatory workflow failures, zero unexplained data discrepancies, no obvious layout/focus defects. Each mandatory requirement's entire acceptance criterion is verified or a real gap remains; “build passes” is not completion. Under the user-selected ephemeral hosting, report verified functional scope with an accepted deployed-durability deviation; do not mark M16/M27/M38 wholly Verified or state all original mandatory criteria passed. The accepted hosting deviation does not require a purchase or block the user-directed demo handoff. M41 requires the user's actual code walkthrough, not an agent assertion that the candidate understands it.
 
 **Documentation:** Reconcile README, REQUIREMENTS, ASSUMPTIONS, deployed behavior, and the separate submission notes field. Include actual links and test outcomes only. Follow the README and submission-field strategy in ASSUMPTIONS.md. Prepare reviewable submission material; do not send messages or submit external forms without appropriate explicit authorization.
 
@@ -262,7 +264,7 @@ Compare reference and implementation at matching viewport/state for hierarchy, t
 | Draft edits destroy historical meaning | Immutable published definitions and version-specific aggregates/detail. |
 | Anonymous visitors edit one another's forms | Isolated sessions, ownership checks on every creator path, foreign-ID integration tests. |
 | Preview contaminates responses/metrics | Nonpersisting completion callback and zero-write tests, including future attempts. |
-| SQLite is durable locally but ephemeral in deployment | Real disk path, runtime migrations, restart/redeploy and backup/restore evidence. |
+| SQLite is durable locally but ephemeral in deployment | User chose Free demo: document ephemeral path and loss boundary; verify reload/pings, retain local durability checks, disclose M16/M27/M38 gap. |
 | Ambiguous statistics / optional values | Explicit version/sample size; percentages among answered; skipped separate; zero/false tested. |
 | Unsupported functionality appears complete | Explicit placeholders/disabled controls; no fake analytics or success notifications. |
 | Cookie/proxy assumptions fail late | Deployed same-origin session proof in Phase 1. |
@@ -333,8 +335,25 @@ Implemented scope:
 
 Initial failures corrected before acceptance: incompatible compiler/test-tool dependencies and missing optional native binding were replaced with a clean Node-24 install; the dialog test now waits for Radix's asynchronous focus restoration; standalone startup includes static assets; browser tests use dedicated ports because an existing unrelated Docker service occupies 8000. No unrelated service was stopped. Windows process cleanup in the restart verifier was corrected and retested successfully.
 
-Remaining live gate: provision/configure Render disk service, import frontend into Vercel, set exact HTTPS origins/rewrite, verify Secure/HttpOnly cookie on frontend host, retain UUID across Render restart and real redeployment, and record URLs/commit/date. Follow [DEPLOYMENT.md](DEPLOYMENT.md). The local Docker preview remains available at [localhost:3000/forms](http://localhost:3000/forms).
+Remaining revised live gate: provision/configure Render Free, import frontend into Vercel, set exact HTTPS origins/rewrite, verify Secure/HttpOnly cookie on frontend host and reload/isolation, configure the external minutely ping and verify more-than-15-minute continuity, then record URLs/commit/date. Cloud restart/redeploy survival is waived by the user's 2026-10-09 instruction and remains a documented durability gap. Follow [DEPLOYMENT.md](DEPLOYMENT.md). The local Docker preview remains available at [localhost:3000/forms](http://localhost:3000/forms).
 
 Limitations: no form CRUD/builder/respondent submission/results/seed data/domain schema yet; no full creator workspace session; no physical-phone/software-keyboard or full accessibility/zoom review; no bonuses. These belong to subsequent phases. M28, M33–M38, U03, U04 are In progress, not wholly Verified.
 
 Next development phase after review and resolution of the live gate (or an explicit user-directed gate adjustment): **Phase 2 — schema, core services, sessions, and seeds**. Stop here for review/handoff.
+
+### Phase 1 hosting and design-reference follow-up — 2026-10-09
+
+Implemented configuration/documentation only: Free plan with no disk and `/app/data/typeform.sqlite3`; detailed Render/Vercel/external-ping handoff; reconciled architecture, requirements, assumptions, and agent instructions. Seed behavior remains planned for Phase 2, once per fresh workspace without resets. No live cron job or hosting proof is implied.
+
+Authorized Chrome Typeform inspection could not start: browser and native computer-use initialization failed with a kernel-assets path error, including reset/retry. No authenticated UI was read and no screenshot captured. [Capture index](docs/design-reference/README.md) lists pending assignment-relevant views; exact user account URL and private response data are not included in repository documentation. Original public references remain the available design evidence.
+
+| Follow-up verification | Actual procedure/result |
+|---|---|
+| Documentation and Blueprint | Inline read-only Python audit from repository root using `backend/.venv/Scripts/python.exe`: **pass**, nine Markdown files, 38 local file links, complete/unique requirement IDs, unchanged unverified durability rows, Phase 2 Not started, no fabricated screenshot files. PyYAML confirms Free Docker service, one instance, no disk, real Docker paths, readiness path and production database/environment settings. This is local structural validation, not Render deployment/API validation. |
+| Backend regression | From backend, `.venv/Scripts/python.exe -m pytest -q`: **18 passed**, one previously documented HTTPX/Starlette warning. Initial sandboxed attempt stalled without output and was interrupted; rerun with approved sandbox escalation passed in under three seconds. |
+| Free-host path/startup | PowerShell inline Python piped to `docker run --rm -i --network none --entrypoint python scaler-typeform-backend:latest -`: **pass**. Existing production image in a disposable container accepted the documented temporary HTTPS origin, created `/app/data/typeform.sqlite3`, ran actual Alembic startup, reached readiness, and verified foreign keys/busy timeout. Container removed on exit; running app untouched. This does not simulate Render availability or durable storage. |
+| Compose / diff | `docker compose config --quiet` and `git diff --check`: **pass**. Local named volume remains configured. Frontend code/dependencies were unchanged, so prior browser/build evidence was not represented as a new run. |
+| Authenticated Typeform | Browser/native initialization and reset/retry failed before access. **Not inspected; zero screenshots captured.** Reference capture index added with all entries Pending. |
+| Live services / scheduler | **Not verified/configured**. Actual service URLs, HTTPS proxy checks and scheduled-call history remain missing. No complete application requirement or later phase was marked Verified. |
+
+Phase 2 remains Not started. Stop for deployment/review handoff.
