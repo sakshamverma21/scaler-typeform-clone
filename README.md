@@ -1,6 +1,6 @@
 # Typeform Clone — Scaler SDE Fullstack assignment
 
-A Typeform-inspired application using Next.js/TypeScript, FastAPI, and SQLite. Development proceeds in reviewed phases. **Current scope: Phase 3 workspace management, locally verified with focused smoke coverage.** The API supports isolated demo workspaces, form management, all eight question types, versioned publication, anonymous submissions, response history, and statistics. The real dashboard supports create/rename/duplicate/delete, list/grid, search/sort, sample labels, response counts and loading/error recovery. The builder destination is an explicit read-only overview; editing, public respondent and results interfaces remain later phases. No bonus is implemented.
+A Typeform-inspired application using Next.js/TypeScript, FastAPI, and SQLite. Development proceeds in reviewed phases. **Current scope: Phase 4 builder and live preview, locally verified with focused checks.** The API supports isolated demo workspaces, form management, all eight question types, versioned publication, anonymous submissions, response history, and statistics. The real dashboard supports create/rename/duplicate/delete, list/grid, search/sort, sample labels, response counts and loading/error recovery. The builder edits all eight question types with serialized autosave, drag ordering and conflict/recovery states. Interactive desktop/mobile preview uses shared answer controls and never collects responses. Public respondent/sharing and results interfaces remain later phases. No bonus is implemented.
 
 User-reported deployments: [frontend](https://scaler-typeform-clone-saksham.vercel.app) and [backend](https://scaler-typeform-api-0n2q.onrender.com). Source shipping does not imply that the latest revision is already live; allow connected deployments to rebuild and verify them separately. The external ping is pending; see [deployment evidence](DEPLOYMENT.md#deployment-status--2026-10-09).
 
@@ -147,10 +147,16 @@ Commit both lockfiles after relevant tests pass. Regenerate OpenAPI then TypeScr
 
 [DESIGN_REFERENCE.md](DESIGN_REFERENCE.md) lists official Typeform evidence and approximations. This repository uses original authored implementation; no existing clone repository code/assets are used. Inter is provided by Fontsource under its font license; Lucide icons and Radix primitives use their published open-source licenses. Typeform is the visual reference and is not affiliated with this assignment project.
 
-Next review: Phase 3 workspace management. Next development phase: **Phase 4 — builder and live preview**, after review. The five-minute full evaluator walkthrough becomes available after mandatory UI workflows are built. Live scheduled-ping/continuity evidence remains deferred at the user's direction.
+Next review: Phase 4 builder/preview. Next development phase: **Phase 5 — respondent and sharing**, after review. The five-minute full evaluator walkthrough becomes available after mandatory UI workflows are built. Live scheduled-ping/continuity evidence remains deferred at the user's direction.
 
 ## Phase 3 focused verification
 
 On 2026-10-09, `npm run test:e2e -- dashboard.spec.ts` passed the production build/strict TypeScript check and **two real Chromium workflow tests** against actual Next/FastAPI/SQLite. Targeted lint passed. Checked CRUD/reload, independent copy, safe cancel/delete, samples/no resurrection, search, failure retry, browser isolation, session expiry and mobile overflow. Desktop/mobile screenshots were manually reviewed. Broader regression/accessibility/cross-browser coverage is deferred at the user's request to prioritize shipping; this is not a complete release QA claim.
 
 Shipping evidence — 2026-10-09: `git push origin main` succeeded for [f74e30f](https://github.com/sakshamverma21/scaler-typeform-clone/commit/f74e30f), containing reviewed Phase 2 services and Phase 3 dashboard. Repository remains private. Connected cloud builds may be running; this does not verify their rollout.
+
+## Phase 4 focused verification
+
+Build/strict types and targeted lint/format passed. `node node_modules/vitest/vitest.mjs run tests/unit/draft-store.test.ts`: **3 passed**; `npm run test:e2e -- builder.spec.ts`: **2 passed**. Real editing/reload/reorder, all eight preview types, zero responses, failure/retry/recovery, stale-tab protection and empty/mobile builder were exercised. Broader QA remains deferred. Theme/ending customization and advanced logic/integrations are explicit placeholders; no bonus is completed.
+
+Draft edits save after about 600ms and remain separate from the public version. A save failure retains edits and offers retry. Another tab's changes produce a conflict; reloading the saved version explicitly discards local edits. A browser-tab recovery prompt offers restore/discard after interrupted saving. Recovery is temporary and cannot recover an expired/deleted creator cookie or a lost Render database.

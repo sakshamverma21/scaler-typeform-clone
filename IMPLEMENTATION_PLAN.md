@@ -12,12 +12,12 @@ Read [AGENTS.md](AGENTS.md), [REQUIREMENTS.md](REQUIREMENTS.md), [ARCHITECTURE.m
 | 1 | Foundation and deployment proof | In progress — local verified; revised live gate pending | User selected Render Free + minutely ping on 2026-10-09; HTTPS cookie/reload/ping checks pending. See Phase 1 verification record. |
 | 2 | Schema, core services, sessions, seeds | Verified locally | 2026-10-09: 81 backend tests, 8 frontend unit tests, 10 Chromium checks, lint/types/build and real process restart. See Phase 2 evidence. Missing Phase 1 live checks explicitly deferred by user. |
 | 3 | Workspace management | Verified locally — focused smoke coverage | 2026-10-09: production build/strict types, targeted lint, two real Chromium workflow checks, desktop/mobile screenshot review. Broader QA deferred at user request. |
-| 4 | Complete builder and preview | Not started | Requires Phase 3. |
+| 4 | Complete builder and preview | Verified locally — focused smoke coverage | 2026-10-09: production build/types, targeted lint, 3 autosave unit checks and 2 real browser workflows. Broader matrix deferred. |
 | 5 | Respondent and sharing | Not started | Requires Phase 4. |
 | 6 | Responses and summaries | Not started | Requires Phase 5. |
 | 7 | Release hardening and submission preparation | Not started | Requires Phase 6; mandatory release gate. |
 
-Latest completed implementation phase: **3 — workspace management**, locally verified with focused smoke tests and stopped for review. Phase 1's scheduled-ping/cookie/continuity gate remains deferred. **Next development phase: 4 — builder and live preview**, only after user continuation. The latest time constraint reduces interim testing to critical checks; the broader catalog remains for Phase 7. No Phase 4 editing/preview is implemented.
+Latest completed implementation phase: **4 — builder and live preview**, verified locally with focused checks; stopped for review. **Next: Phase 5 — respondent and sharing**, after user continuation. Time-constrained QA covers critical behavior, not the complete release catalog. Phase 1 live cookie/cron/continuity checks remain deferred. No public submission/sharing UI or results UI is claimed complete.
 
 **Approved hosting revision, 2026-10-09:** Use Vercel + Render Free + an external minutely health ping. The user accepts ephemeral SQLite for an expected short evaluation and waived cloud restart/redeploy survival checks for this demo handoff. The gate now requires live HTTPS cookie/origin/no-store checks, same-instance reload continuity/isolation, and actual scheduled calls. Keep local durable-volume evidence and the original M16/M27/M38 persistence criteria separate: deployed durability remains a documented gap, not a passed check. See [DEPLOYMENT.md](DEPLOYMENT.md) and A32–A34 in ASSUMPTIONS.md.
 
@@ -425,3 +425,25 @@ Broader tests are intentionally deferred: no full API/unit suite rerun in Phase 
 **Next: Phase 4 — builder and live preview**, after review. Do not begin it in this phase.
 
 Shipping evidence — 2026-10-09: `git push origin main` succeeded for [f74e30f](https://github.com/sakshamverma21/scaler-typeform-clone/commit/f74e30f), containing reviewed Phase 2 services and Phase 3 dashboard. Repository remains private. Connected cloud builds may be running; this does not verify their rollout.
+
+## Phase 4 verification record
+
+**2026-10-09 — builder/preview complete locally with focused coverage.** Existing Phase 2 APIs already support the required full-definition save; no backend/schema change needed. Installed pinned @dnd-kit/react/helpers 0.5.0 using the current API/documentation. Replaced the read-only overview; no later-phase public/results UI implemented.
+
+Implemented modules: `features/builder` (pure reducer, serialized DraftStore, navigation/settings/canvas/picker, preview), `components/questions` (registry/defaults/client validation, shared answer controls/QuestionFlow), build/preview routes. All eight types, stable IDs, prompt/description/choice inline editing, required toggle, rating range, type changes with incompatible-setting cleanup, choice reordering, question duplication/deletion, pointer/keyboard sorting and move buttons. Desktop three panes; mobile question/settings dialogs. Design/ending/workflow/connect and future share/results UI are explicitly labeled placeholders.
+
+Autosave is debounced 600ms, serialized, revision-protected and generation-aware. Failed saves retain exact mutation ID/payload; retries drain newer edits afterward. A stale revision reconciles a matching accepted mutation or becomes an explicit conflict. Unsaved recovery is browser-tab storage with restore/discard choice; editing is blocked until that choice. Reopening a pristine cached form accepts a newer fetched revision. Back-to-workspace/saved-preview navigation flushes; browser unload warns, SPA unmount saves best effort and retains recovery. No promise that tab closure completes network writes.
+
+| Check | Procedure / result |
+|---|---|
+| Build/types | Browser runner optimized production build and strict TypeScript: passed. Normal-target production build restored after tests. |
+| Targeted lint/format | Node 24.19.0, ESLint on builder/shared controls/routes/dialog and added tests; Prettier on changed files: passed. |
+| Autosave unit behavior | `node node_modules/vitest/vitest.mjs run tests/unit/draft-store.test.ts`: **3 passed**. Queued edits/old acknowledgements, revision ordering/pristine cache synchronization, exact failed-request retry plus later edits, conflict protection and recovery discovery/discard. |
+| Actual browser workflows | `node scripts/run-e2e.mjs builder.spec.ts`: **2 Chromium tests passed**, actual Next/FastAPI/file-backed SQLite. Add/edit all 8, choices/help/required/rating, last-to-first pointer reorder, cancelled keyboard sort, keyboard move buttons, independent duplicate/delete/cancel, saved title/order/settings reload; full preview with blank-required/invalid-email/no-match dropdown, zero/false, multiline text, explicit ending and **zero response POSTs/rows**; saved preview route; failed save/retry, recovered draft after reload, real two-tab conflict without overwrite, discard/reload, mobile settings/overflow, last-question deletion/empty state persistence. |
+| Visual smoke | Actual 1440px desktop and 390px mobile builder screenshots viewed against captures 06/11/16. Approximate 240/256px side panes, pale panels, colored badges, 26px prompt, inline inputs, dark actions; no mobile horizontal overflow. Preview behavior tested; full preview visual/phone/motion comparison deferred. |
+
+Fixed before acceptance: test fixture needed the real write Origin; Escape in the open dropdown was dismissing the Radix preview dialog (now the widget consumes it); pending recovery now blocks editing and reports Unsaved; pristine cached form refresh no longer leaves the old definition displayed. Blank draft titles render as Untitled form in the dashboard. CSS controls inherit font family without overriding explicit typography sizes.
+
+Deferred by user time constraint: full legacy API/unit/E2E rerun, every first/middle/last permutation, many-question/choice limits, complete type-change matrix, lost-ack network fault matrix, client/server fixture parity, Firefox/WebKit, physical phone, all viewport/zoom/keyboard/motion/accessibility checks. M04/M06–M09/public interaction criteria remain partial where that evidence or Phase 5/6 integration is missing. No bonus, live rollout or cloud durability claim.
+
+**Stop for review. Next phase: 5 — respondent and sharing.**

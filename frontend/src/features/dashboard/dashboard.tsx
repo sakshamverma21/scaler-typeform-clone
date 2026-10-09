@@ -441,7 +441,7 @@ export function Dashboard() {
                             title={form.title}
                             className={`block font-medium outline-offset-4 hover:underline ${view === "grid" ? "line-clamp-2 leading-6" : "truncate"}`}
                           >
-                            {form.title}
+                            {form.title || "Untitled form"}
                           </Link>
                           {view === "list" && (
                             <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-text-muted xl:hidden">

@@ -1,4 +1,4 @@
-import { FormOverview } from "@/features/dashboard/form-overview";
+import { Builder } from "@/features/builder/builder";
 
 export default async function BuildPage({
   params,
@@ -6,5 +6,5 @@ export default async function BuildPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <FormOverview id={id} />;
+  return <Builder id={id} />;
 }

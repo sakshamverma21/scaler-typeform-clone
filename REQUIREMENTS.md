@@ -18,26 +18,26 @@ Status vocabulary: **Planned**, **In progress**, **Implemented / unverified**, *
 
 | ID | Source | Required feature | Acceptance criteria, including approved implementation contract | Verification | Status |
 |---|---|---|---|---|---|
-| M01 | P018 | Create form with title and ordered questions | Creation opens a usable builder; title and question order survive reload and restart. | API-CRUD, E2E-CREATOR, OPS-PERSIST | In progress |
-| M02 | P019–P020 | Add questions | All eight required types can be added repeatedly with independent stable identifiers. | API-DEFINITION, E2E-TYPES | In progress |
-| M03 | P019, P021 | Edit questions | Prompt, description, settings, and applicable choices update the local canvas immediately and persist. | COMPONENT-BUILDER, E2E-CREATOR | In progress |
+| M01 | P018 | Create form with title and ordered questions | Creation opens a usable builder; title and question order survive reload and restart. | API-CRUD, E2E-CREATOR, OPS-PERSIST | Verified |
+| M02 | P019–P020 | Add questions | All eight required types can be added repeatedly with independent stable identifiers. | API-DEFINITION, E2E-TYPES | Verified |
+| M03 | P019, P021 | Edit questions | Prompt, description, settings, and applicable choices update the local canvas immediately and persist. | COMPONENT-BUILDER, E2E-CREATOR | Verified |
 | M04 | P019 | Drag-and-drop reorder | Move first, middle, and last questions; numbering, preview, saved order, and published order agree. Cancelled drag changes nothing. | COMPONENT-BUILDER, E2E-REORDER | In progress |
-| M05 | P019 | Delete questions | Selected and last-question deletion leave a usable builder and persist. Existing submissions remain readable through historical versions. | API-HISTORY, E2E-CREATOR | In progress |
+| M05 | P019 | Delete questions | Selected and last-question deletion leave a usable builder and persist. Existing submissions remain readable through historical versions. | API-HISTORY, E2E-CREATOR | Verified |
 | M06 | P020 | Eight question types | Every type in the type matrix works from editing through public submission and results. | API-VALIDATION, E2E-TYPES, E2E-RESULTS | In progress |
 | M07 | P021, P032 | Required toggle | Missing required answers fail; optional answers can be skipped; boolean false and numeric zero count as answers. | API-VALIDATION, COMPONENT-RUNNER, E2E-VALIDATION | In progress |
 | M08 | P021 | Description/help text | Add, edit, remove, save, preview, and publish optional descriptions. | E2E-CREATOR, VISUAL | In progress |
-| M09 | P022, P043 | Live preview | Canvas reflects local edits; interactive desktop/mobile preview shares public rendering and validation. Preview creates no responses. | COMPONENT-PREVIEW, E2E-PREVIEW | Planned |
+| M09 | P022, P043 | Live preview | Canvas reflects local edits; interactive desktop/mobile preview shares public rendering and validation. Preview creates no responses. | COMPONENT-PREVIEW, E2E-PREVIEW | In progress |
 | M10 | P024 | Creator forms list | Every owned form shows correct draft/published state and completed-response count. | API-RESULTS, E2E-CREATOR | Verified |
-| M11 | P025 | Rename forms | Dashboard and builder reflect persisted title; share URL does not change. | API-CRUD, E2E-CREATOR | In progress |
+| M11 | P025 | Rename forms | Dashboard and builder reflect persisted title; share URL does not change. | API-CRUD, E2E-CREATOR | Verified |
 | M12 | P025 | Duplicate forms | Copy current draft definition/settings into independent identifiers, unpublished with zero responses. Subsequent edits are independent. | API-CRUD, E2E-CREATOR | Verified |
 | M13 | P025 | Delete forms | Confirmation explains form/response removal; cancel preserves data; confirm removes data and invalidates link. | API-CRUD, E2E-CREATOR | Verified |
 | M14 | P026 | Publish and share | A valid nonempty form publishes to a functioning public URL; invalid definitions report actionable errors. | API-PUBLISH, E2E-PUBLISH | In progress |
 | M15 | P026 | Unpublish | Link becomes unavailable and rejects new submissions; republishing restores the same URL. | API-PUBLISH, E2E-PUBLISH | In progress |
 | M16 | P027 | Persist definitions | Titles, questions, order, options, required flags, descriptions, and settings survive restart and redeployment. | API-DEFINITION, OPS-PERSIST | In progress |
-| M17 | P030, P042 | Full-screen conversational flow | One question is visually active, creator navigation is absent, and going backward preserves answers. | COMPONENT-RUNNER, E2E-RESPONDENT, VISUAL | Planned |
-| M18 | P030, P042 | Smooth transitions | Forward/backward motion has correct direction, no flicker or overlapping controls, and no accidental multiple advances. | COMPONENT-RUNNER, E2E-KEYBOARD, VISUAL-MOTION | Planned |
-| M19 | P031 | Keyboard navigation | Enter advances appropriately; arrows navigate without breaking text cursors, dropdowns, radio groups, or Tab navigation. | E2E-KEYBOARD | Planned |
-| M20 | P031 | Progress indicator | Answered progress stays consistent when answers change; successful completion reaches 100%. Position is also visible. | COMPONENT-RUNNER, E2E-RESPONDENT | Planned |
+| M17 | P030, P042 | Full-screen conversational flow | One question is visually active, creator navigation is absent, and going backward preserves answers. | COMPONENT-RUNNER, E2E-RESPONDENT, VISUAL | In progress |
+| M18 | P030, P042 | Smooth transitions | Forward/backward motion has correct direction, no flicker or overlapping controls, and no accidental multiple advances. | COMPONENT-RUNNER, E2E-KEYBOARD, VISUAL-MOTION | In progress |
+| M19 | P031 | Keyboard navigation | Enter advances appropriately; arrows navigate without breaking text cursors, dropdowns, radio groups, or Tab navigation. | E2E-KEYBOARD | In progress |
+| M20 | P031 | Progress indicator | Answered progress stays consistent when answers change; successful completion reaches 100%. Position is also visible. | COMPONENT-RUNNER, E2E-RESPONDENT | In progress |
 | M21 | P032 | Client and server validation | Invalid UI and direct API answers are rejected with question-specific errors. Server does not trust client metadata. | API-VALIDATION, E2E-VALIDATION | In progress |
 | M22 | P033 | Submit and thank-you screen | Response and answers commit atomically; thank-you appears only after confirmed success; failures retain answers for retry. | API-SUBMISSION, E2E-RESPONDENT | In progress |
 | M23 | P014, P034 | Public filling without login | Published link works in a separate browser context without a creator session. | E2E-PUBLIC | In progress |
@@ -46,9 +46,9 @@ Status vocabulary: **Planned**, **In progress**, **Implemented / unverified**, *
 | M26 | P038 | Basic per-question statistics | Choice counts/percentages, numeric/rating summaries, answered/skipped counts reconcile with stored version-specific responses. | API-STATS, E2E-RESULTS | In progress |
 | M27 | P039 | Persist responses | Responses and aggregates survive restart and redeployment. | OPS-PERSIST | In progress |
 | M28 | P007, P041–P043, P047, P063 | Typeform visual fidelity | Workspace, builder, respondent, dialogs, and results pass the reference-based visual rubric. No generic default component styling substitutes for the reference. | VISUAL | In progress |
-| M29 | P044 | Forms, modals, inline editing | Creation/rename/delete dialogs and inline question/choice editing work; dialog focus is restored. | COMPONENT-DIALOG, E2E-CREATOR | Planned |
-| M30 | P045 | Notifications/toasts | Create, duplicate, publish, copy-link, and delete give truthful feedback; save failure remains visibly recoverable. | E2E-STATES | Planned |
-| M31 | P046 | Theme/thank-you settings placeholders | Both are discoverable and honestly labeled if unimplemented. Actual default thank-you screen still functions. | E2E-PLACEHOLDERS | Planned |
+| M29 | P044 | Forms, modals, inline editing | Creation/rename/delete dialogs and inline question/choice editing work; dialog focus is restored. | COMPONENT-DIALOG, E2E-CREATOR | Verified |
+| M30 | P045 | Notifications/toasts | Create, duplicate, publish, copy-link, and delete give truthful feedback; save failure remains visibly recoverable. | E2E-STATES | In progress |
+| M31 | P046 | Theme/thank-you settings placeholders | Both are discoverable and honestly labeled if unimplemented. Actual default thank-you screen still functions. | E2E-PLACEHOLDERS | In progress |
 | M32 | P064 | Seed data | Fresh workspace has two published mixed-type forms and synthetic existing responses; together they exercise all eight types. | API-SEED, E2E-FIRST-VISIT | Verified |
 
 ## Question-type contract
@@ -189,3 +189,9 @@ See [Phase 3 verification record](IMPLEMENTATION_PLAN.md#phase-3-verification-re
 M10/M12/M13/M32 are Verified using complementary Phase 2 API/database evidence and Phase 3 actual UI checks: owned list/status/counts, independent draft copy/no responses, deletion cancellation/confirmation plus API cascades/link invalidation, and labeled first-visit samples covering all types. M11 remains In progress because dashboard rename/reload is verified but the actual builder is Phase 4 (stable public slug is API-verified). M29/M30 and U03 retain partial evidence; inline question editing, share/publish notifications and full responsive/accessibility review are later. M01 still requires builder behavior. M28 is not claimed pixel-perfect.
 
 The user explicitly reduced interim test scope for shipping. Comprehensive cross-browser, accessibility, pagination/fault and release checks remain deferred. Source shipping and actual live deployment are separate evidence; ephemeral storage and pending cron remain documented.
+
+### Phase 4 builder/preview evidence — 2026-10-09
+
+See [Phase 4 verification record](IMPLEMENTATION_PLAN.md#phase-4-verification-record): 3 focused autosave unit checks, 2 real Chromium workflows, strict build/types/lint and desktop/mobile builder review passed. M01/M02/M03/M05/M11/M29 combine current usable-builder/add/edit/title/reload/choice/delete/focus UI evidence with earlier API persistence, independent keys, immutable history and stable-slug evidence. Original deployed durability remains separately unverified under M16/M27/M38.
+
+M04 is implemented and tested for pointer last-to-first order, cancelled keyboard sorting and move buttons; all positional permutations/published UI order remain untested. M06–M09/M17–M22/M31 stay partial: all eight preview controls work, blank required/email format/zero/false/multiline/dropdown and zero-write completion were checked, but public flow/results integration and broader validation/mobile-motion matrices are later. Theme/ending/workflow/connect placeholders and disabled payment/upload picker entries exist; not completed bonuses. No requirement advances solely because a build passed. Broader QA is deferred at the user's explicit direction.

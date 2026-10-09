@@ -12,6 +12,7 @@ export function DialogContent({
   description,
   children,
   busy = false,
+  className = "",
   onOpenAutoFocus,
   onCloseAutoFocus,
 }: {
@@ -19,6 +20,7 @@ export function DialogContent({
   description: string;
   children: React.ReactNode;
   busy?: boolean;
+  className?: string;
   onOpenAutoFocus?: (event: Event) => void;
   onCloseAutoFocus?: (event: Event) => void;
 }) {
@@ -29,12 +31,20 @@ export function DialogContent({
         onOpenAutoFocus={onOpenAutoFocus}
         onCloseAutoFocus={onCloseAutoFocus}
         onEscapeKeyDown={(event) => {
-          if (busy) event.preventDefault();
+          const target = event.target;
+          if (
+            busy ||
+            (target instanceof Element &&
+              target.closest(
+                '[role="combobox"][aria-expanded="true"], [role="listbox"]',
+              ))
+          )
+            event.preventDefault();
         }}
         onPointerDownOutside={(event) => {
           if (busy) event.preventDefault();
         }}
-        className="fixed top-1/2 left-1/2 z-50 max-h-[90dvh] w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border border-border bg-surface p-6 shadow-[var(--shadow-overlay)]"
+        className={`fixed top-1/2 left-1/2 z-50 max-h-[90dvh] w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border border-border bg-surface p-6 shadow-[var(--shadow-overlay)] ${className}`}
       >
         <DialogPrimitive.Title className="pr-8 text-lg font-semibold">
           {title}

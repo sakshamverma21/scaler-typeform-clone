@@ -43,7 +43,7 @@ export function FormActions({
       <button
         ref={trigger}
         disabled={disabled}
-        aria-label={`Actions for ${form.title}`}
+        aria-label={`Actions for ${form.title || "Untitled form"}`}
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => {

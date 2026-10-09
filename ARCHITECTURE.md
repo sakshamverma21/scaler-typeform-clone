@@ -1,6 +1,6 @@
 # Application architecture
 
-Status: **Phase 2 core API, domain schema and seeds implemented and verified locally**. Frontend feature screens remain planned for Phases 3–6. The user reported Vercel/Render deployment and explicitly deferred missing Phase 1 live checks to continue Phase 2; no cloud durability is inferred. Read with [REQUIREMENTS.md](REQUIREMENTS.md), [DESIGN_REFERENCE.md](DESIGN_REFERENCE.md), and the phase gates in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+Status: **Phase 4 builder and preview implemented with focused local verification**. Dashboard/core API are implemented; public/sharing/results UI remains Phases 5–6. The user reported Vercel/Render deployment and explicitly deferred missing Phase 1 live checks to continue Phase 2; no cloud durability is inferred. Read with [REQUIREMENTS.md](REQUIREMENTS.md), [DESIGN_REFERENCE.md](DESIGN_REFERENCE.md), and the phase gates in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 ## Implemented foundation and version resolution
 
@@ -266,3 +266,13 @@ Phase 0 did not provision accounts, buy hosting, or claim deployment. Under the 
 `features/dashboard` owns workspace queries/actions/session initialization and the temporary form overview. One module-scoped in-flight promise deduplicates no-cookie bootstrap; QueryClient caches the session indefinitely, and a 401 clears creator data and reinitializes without replaying the failed write. Bootstrap timeout is 90 seconds for demo cold starts. Forms use workspace-scoped infinite queries with 30-record pages; search/sort filter loaded records, not a server-wide search. Mutations invalidate list data; rename uses revision preconditions, duplicate first fetches latest revision. Dialogs retain input/errors on failure and lock destructive dismissal while pending. Global lightweight notifications survive creation navigation.
 
 List/grid preference is optional browser storage with an in-memory fallback. `/forms/[id]/build` is a real-data read-only overview until Phase 4. No new database migration or business rule was added here; Python remains authoritative. Full builder/preview and public/result UI boundaries remain unchanged.
+
+## Phase 4 implementation decisions — 2026-10-09
+
+`DraftStore` is one small serialized writer/state container subscribed through React useSyncExternalStore; `draftReducer` handles definition changes immutably. Reducer/snapshot generations prevent old acknowledgements replacing newer local edits. The store owns its 600ms timer, current revision, retained failed mutation and sessionStorage recovery; server query data remains separate. Conflict reconciliation only accepts the same last mutation ID; other writes require explicit discard/reload. Pristine stores adopt newer fetched revisions. Deliberate builder navigation flushes, unload warns; SPA/browser closure is best effort, with recovery retained until acknowledgement/discard.
+
+Current @dnd-kit/react/helpers **0.5.0** implement handle-only sortable rows and commit order on noncancelled drag end using move. No legacy core/sortable imports. [Current sorting guidance](https://dndkit.com/react/guides/sortable-state-management/) was checked. Question/option UUIDs remain stable; duplicate gets new keys; type switches clear incompatible settings and retain options only between choice/dropdown.
+
+`components/questions` contains registry/defaults, client validation/normalization, controlled answer widgets and QuestionFlow. Preview passes `preview=true` and no persistence callback; it completes locally. Shared callback-based flow is groundwork for Phase 5, not a live public submission implementation. Preview frame uses container-responsive controls; CSS 250ms vertical/opacity transitions and reduced-motion override suffice here. Motion remains a Phase 5 decision rather than an unused dependency. Validators match practical Phase 2 bounds; exhaustive client/server fixture parity remains a release task.
+
+No new backend/database layer was required. Design/ending customization is placeholder-only; existing theme/ending data is preserved. Other section buttons explain scope instead of performing imaginary actions. Old read-only overview module was removed after its route was replaced.
