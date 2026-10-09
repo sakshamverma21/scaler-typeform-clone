@@ -1,0 +1,30 @@
+name: scaler-typeform
+services:
+  backend:
+    build: ./backend
+    environment:
+      TYPEFORM_ENVIRONMENT: development
+      TYPEFORM_DATABASE_PATH: /var/data/typeform.sqlite3
+      TYPEFORM_ALLOWED_ORIGINS: '["http://localhost:3000"]'
+      TYPEFORM_FOUNDATION_PROBE_ENABLED: "true"
+    volumes:
+      - typeform-data:/var/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health/ready', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 10
+      start_period: 15s
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        API_BACKEND_URL: http://backend:8000
+        NEXT_PUBLIC_FOUNDATION_PROBE_ENABLED: "true"
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+volumes:
+  typeform-data:

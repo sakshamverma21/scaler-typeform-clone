@@ -1,0 +1,38 @@
+# Local configuration and data
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.sqlite*
+*.db
+*.db-*
+data/
+uploads/
+.tools/
+.cache/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Frontend and browser artifacts
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+test-results/
+playwright-report/
+.vercel/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+*.log

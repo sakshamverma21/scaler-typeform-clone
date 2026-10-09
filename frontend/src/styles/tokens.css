@@ -1,0 +1,17 @@
+:root {
+  --canvas: #faf9f7;
+  --surface: #ffffff;
+  --surface-muted: #f3f2ef;
+  --surface-hover: #eae9e5;
+  --text: #262623;
+  --text-muted: #686862;
+  --border: #e4e3df;
+  --accent: #254dd5;
+  --accent-soft: #edf1ff;
+  --danger: #b42318;
+  --success: #256442;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-overlay: 0 16px 48px rgb(0 0 0 / 12%);
+}

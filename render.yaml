@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: scaler-typeform-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    buildFilter:
+      paths:
+        - backend/**
+        - render.yaml
+    plan: starter
+    numInstances: 1
+    healthCheckPath: /api/v1/health/ready
+    disk:
+      name: typeform-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: TYPEFORM_ENVIRONMENT
+        value: production
+      - key: TYPEFORM_DATABASE_PATH
+        value: /var/data/typeform.sqlite3
+      - key: TYPEFORM_ALLOWED_ORIGINS
+        sync: false
+      - key: TYPEFORM_FOUNDATION_PROBE_ENABLED
+        value: "true"
+      - key: TYPEFORM_SESSION_DAYS
+        value: "30"
