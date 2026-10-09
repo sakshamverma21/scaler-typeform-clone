@@ -1,8 +1,34 @@
+export interface ApiFieldError {
+  message: string;
+  question_key?: string;
+  field?: string | (string | number)[];
+}
+
+function fieldErrors(value: unknown): ApiFieldError[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is ApiFieldError => {
+    if (!item || typeof item !== "object" || typeof item.message !== "string")
+      return false;
+    return (
+      (item.question_key === undefined ||
+        typeof item.question_key === "string") &&
+      (item.field === undefined ||
+        typeof item.field === "string" ||
+        (Array.isArray(item.field) &&
+          item.field.every(
+            (part: unknown) =>
+              typeof part === "string" || typeof part === "number",
+          )))
+    );
+  });
+}
+
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
     public readonly code: string,
     message: string,
+    public readonly errors: ApiFieldError[] = [],
   ) {
     super(message);
     this.name = "ApiError";
@@ -41,6 +67,7 @@ export async function apiRequest<T>(
       typeof error.message === "string"
         ? error.message
         : "Something went wrong. Please try again.",
+      fieldErrors(error.errors),
     );
   }
   if (body === null)

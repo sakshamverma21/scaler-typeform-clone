@@ -10,6 +10,7 @@ import time
 import urllib.request
 from http.cookiejar import CookieJar
 from pathlib import Path
+from uuid import uuid4
 
 ROOT = Path(__file__).resolve().parents[1]
 ORIGIN = "http://localhost:3000"
@@ -82,12 +83,52 @@ def main():
         database = Path(directory) / "restart.sqlite3"
         opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(CookieJar()))
         url = f"http://127.0.0.1:{port}/api/v1/foundation/probe"
+        api = f"http://127.0.0.1:{port}/api/v1"
+
+        def call(path, method="GET", body=None, revision=None):
+            headers = {"Origin": ORIGIN}
+            if body is not None:
+                headers["Content-Type"] = "application/json"
+            if revision is not None:
+                headers["If-Match"] = f'"{revision}"'
+            request = urllib.request.Request(
+                api + path,
+                method=method,
+                headers=headers,
+                data=json.dumps(body).encode() if body is not None else None,
+            )
+            with opener.open(request, timeout=10) as response:
+                return json.load(response)
+
         with (Path(directory) / "process.log").open("w", encoding="utf-8") as log:
             first = start_backend(port, database, log)
             try:
                 request = urllib.request.Request(url, method="POST", headers={"Origin": ORIGIN})
                 with opener.open(request, timeout=10) as response:
                     saved = json.load(response)
+                workspace = call("/creator/session", "POST")
+                created = call("/creator/forms", "POST", {"title": "Process restart proof"})
+                form_path = f"/creator/forms/{created['form']['id']}"
+                definition = created["draft"]
+                key = str(uuid4())
+                definition["questions"] = [
+                    {"question_key": key, "type": "number", "title": "How many?", "required": True}
+                ]
+                call(
+                    form_path + "/draft",
+                    "PUT",
+                    {"mutation_id": str(uuid4()), "definition": definition},
+                    0,
+                )
+                published = call(form_path + "/publish", "POST", revision=1)
+                public_path = f"/public/forms/{published['public_slug']}"
+                version = call(public_path)
+                submission = {
+                    "version_id": version["version_id"],
+                    "submission_key": str(uuid4()),
+                    "answers": [{"question_key": key, "value": 0}],
+                }
+                receipt = call(public_path + "/responses", "POST", submission)
             finally:
                 stop_backend(first)
             restarted = start_backend(port, database, log)
@@ -96,9 +137,25 @@ def main():
                     restored = json.load(response)
                 if restored != saved:
                     raise RuntimeError("The persisted record changed after restarting the process")
+                assert call("/creator/session", "POST") == workspace
+                persisted = call(form_path)
+                assert persisted["draft"]["questions"][0]["question_key"] == key
+                assert persisted["form"]["response_count"] == 1
+                assert call(public_path + "/responses", "POST", submission) == receipt
+                assert call(form_path + f"/responses/{receipt['id']}")["answers"][0]["value"] == 0
+                assert call(form_path + "/summary")["questions"][0]["mean"] == 0
                 print(
                     json.dumps(
-                        {"result": "PASS", "record_id": saved["id"], "process_restart": True}
+                        {
+                            "result": "PASS",
+                            "record_id": saved["id"],
+                            "process_restart": True,
+                            "form_id": created["form"]["id"],
+                            "response_id": receipt["id"],
+                            "creator_session": True,
+                            "summary": True,
+                            "retry": True,
+                        }
                     )
                 )
             finally:

@@ -1,6 +1,6 @@
 # Application architecture
 
-Status: **Phase 1 foundation implemented and verified locally; live deployment evidence pending**. Domain form/workspace/submission services and the eight-table schema below remain planned for Phase 2. Read with [REQUIREMENTS.md](REQUIREMENTS.md), [DESIGN_REFERENCE.md](DESIGN_REFERENCE.md), and the phase gates in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+Status: **Phase 2 core API, domain schema and seeds implemented and verified locally**. Frontend feature screens remain planned for Phases 3–6. The user reported Vercel/Render deployment and explicitly deferred missing Phase 1 live checks to continue Phase 2; no cloud durability is inferred. Read with [REQUIREMENTS.md](REQUIREMENTS.md), [DESIGN_REFERENCE.md](DESIGN_REFERENCE.md), and the phase gates in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 ## Implemented foundation and version resolution
 
@@ -103,6 +103,19 @@ Generate TypeScript API types from backend OpenAPI and use a small fetch wrapper
 | Seed module | Validated original synthetic definitions/responses, idempotent per-workspace initialization. |
 
 Use one transaction per domain mutation. Do not perform network calls while holding SQLite write transactions. Surface recoverable contention as a structured service error; never return success before commit.
+
+### Implemented Phase 2 contract details
+
+- `0002_form_domain` is a frozen migration, independent of future ORM changes. It upgrades the existing diagnostic database without deleting it and has a tested downgrade/re-upgrade. The eight domain tables match ORM metadata. Published rows are immutable through the services; direct database administrators can still modify the database.
+- Request sessions explicitly start `BEGIN` for a consistent read snapshot and `BEGIN IMMEDIATE` for mutations, before inspecting ownership, revisions or publication. SQLite serializes writers. FastAPI's function-scoped dependency commits before sending a successful response, and exceptions roll back. See [FastAPI dependency scope](https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-with-yield/). Commit/disk failures and simultaneous writers have dedicated tests. No network work is done inside transactions.
+- Draft save, rename, duplicate and publish require a quoted integer `If-Match`, such as `"3"`. Missing header: 428 `revision_required`; malformed header: 422; stale revision: 412. Detail/create/save/rename/duplicate responses expose the revision as ETag. Only the last accepted save mutation ID is retained: identical immediate replay succeeds, differing payload conflicts, replay after newer edits must reconcile a 412. Form deletion returns a JSON `{status: "deleted"}` response.
+- Bounds selected for the demo: form title 200 characters; prompt/description 2,000; option label 500; at most 100 questions and 100 options per question; 100 supplied answers; pagination 1–100, default 30. Empty drafts are permitted, but publication requires a nonblank title/prompt and valid choice counts. Keys are UUID strings. Unsupported types/settings/extra fields are rejected.
+- Theme storage is bounded to Inter plus hex background/text/accent colors; ending storage has title/description. This is persistence groundwork, not an implemented theme/ending customization UI or bonus.
+- Outer text whitespace is normalized; internal long-text newlines survive. Email uses a bounded practical syntax check: ASCII unquoted local parts and IDNA domains with at least two labels, maximum 254 characters/64-character local part. It does not check deliverability or support every RFC mailbox form. Client validation must match these choices when the runner is built.
+- New workspaces seed 12 product-feedback and 8 event-registration responses plus one draft through the normal definition/publication/submission services, in the same transaction as the creator cookie record. Values are deterministic synthetic examples; identifiers are independent random UUIDs. Failure rolls everything back. An existing cookie resumes its workspace and never seeds again. Simultaneous bootstraps with an existing cookie return the same workspace. Independent requests without any cookie have no identity to correlate; Phase 3 must share one bootstrap promise to avoid duplicate first-visit initialization.
+- Results use bounded cursor pages (descending timestamp/ID, or version number/ID) and SQL aggregates. The first three ordered answers are a list preview; individual detail includes all questions/skips. Seed counts explicitly cast boolean values to integers before summing. The response preview query per row is bounded by the page maximum; batch optimization is unnecessary for this demo.
+
+Actual code is under `backend/app/api`, `backend/app/schemas`, `backend/app/services`, and `backend/migrations/versions/0002_form_domain.py`; frontend contracts/wrappers are under `frontend/src/lib/api`. Later frontend state, autosave scheduling, rendering and client validation remain planned below.
 
 ## Relational schema
 
@@ -240,10 +253,16 @@ The browser calls same-origin `/api/v1`; a fixed external rewrite forwards to th
 
 **Durability boundary:** The ping addresses idle sleep, not data retention. Render Free may replace the filesystem on restart, redeploy, or spin-down. Across browser sessions, SQLite persists while its file/instance exists; it is not durable deployed storage. M16/M27/M38 retain their original acceptance criteria and this recorded gap. Do not describe the ping as a backup or mark deployed restart persistence verified. [Render Free](https://render.com/docs/free). A paid disk remains an optional future migration, not a prerequisite the user must purchase now.
 
-Seed each fresh workspace transactionally once. Refresh/startup must not reset existing work or resurrect deleted samples. A lost database may receive new synthetic examples when a new workspace is initialized; those examples do not restore user edits or responses. This remains Phase 2 implementation.
+Seed each fresh workspace transactionally once. Refresh/startup must not reset existing work or resurrect deleted samples. A lost database may receive new synthetic examples when a new workspace is initialized; those examples do not restore user edits or responses. Implemented and tested in Phase 2; Phase 3 now initializes and displays samples through the real UI.
 
 Use rollback-journal mode, foreign keys enabled on every connection, a five-second busy timeout, and short transactions. Do not enable WAL or multiple workers casually without new evidence and tests. Use SQLite's backup API for consistent backups; verify restoration into a separate database. Do not copy a live database file as a backup procedure. [SQLite backup API](https://sqlite.org/backup.html).
 
 Provide Docker Compose with a named database volume for local operation, important because the checkout is inside OneDrive. Native setup must accept a configurable database path outside actively synced files. Environment documentation will include database path, frontend/backend origins, API rewrite destination, session settings, and production flags; no secrets or live databases belong in Git.
 
 Phase 0 did not provision accounts, buy hosting, or claim deployment. Under the revised Phase 1 gate, cloud restart/redeploy survival is waived by the user; actual HTTPS cookie/reload and scheduled-ping evidence is still pending. Phase 7 verifies application persistence locally and reports the selected demo's deployed durability gap explicitly, rather than marking the original OPS-PERSIST criterion wholly passed.
+
+## Phase 3 frontend integration — 2026-10-09
+
+`features/dashboard` owns workspace queries/actions/session initialization and the temporary form overview. One module-scoped in-flight promise deduplicates no-cookie bootstrap; QueryClient caches the session indefinitely, and a 401 clears creator data and reinitializes without replaying the failed write. Bootstrap timeout is 90 seconds for demo cold starts. Forms use workspace-scoped infinite queries with 30-record pages; search/sort filter loaded records, not a server-wide search. Mutations invalidate list data; rename uses revision preconditions, duplicate first fetches latest revision. Dialogs retain input/errors on failure and lock destructive dismissal while pending. Global lightweight notifications survive creation navigation.
+
+List/grid preference is optional browser storage with an in-memory fallback. `/forms/[id]/build` is a real-data read-only overview until Phase 4. No new database migration or business rule was added here; Python remains authoritative. Full builder/preview and public/result UI boundaries remain unchanged.

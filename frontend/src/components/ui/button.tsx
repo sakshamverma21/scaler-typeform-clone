@@ -1,11 +1,12 @@
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "danger";
 };
 
 const variants = {
-  primary: "bg-text text-white hover:bg-[#41413c]",
+  primary: "bg-text text-white hover:bg-[#443a45]",
+  danger: "bg-[var(--danger)] text-white hover:bg-[#8b1c12]",
   secondary: "border border-border bg-surface text-text hover:bg-surface-muted",
   ghost: "text-text-muted hover:bg-surface-muted hover:text-text",
 };

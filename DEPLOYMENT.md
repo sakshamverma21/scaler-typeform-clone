@@ -56,7 +56,7 @@ Use [cron-job.org](https://cron-job.org/en/), whose [official FAQ](https://cron-
 5. Run a manual test and inspect execution history: expect HTTP 200 and a small JSON body. Turn on failure notifications if desired.
 6. Check several subsequent scheduled executions. If the first call hits a sleeping backend, open the health URL manually and wait for readiness, then test again. The scheduler's default timeout may expire during the initial wake-up; one timeout is not proof that the API is broken.
 
-The job is **not configured yet**: an actual Render URL and access to the scheduler account are needed. It only calls health; it must never create a creator session, seed data, submit a response, or touch private account information. The existing frontend requests readiness on workspace load and has loading/error/retry states. Those local states are verified; deployed cold-start behavior still needs observation.
+The job is **not configured yet**: the actual Render URL is known, but scheduler setup/history are still needed. It only calls health; it must never create a creator session, seed data, submit a response, or touch private account information. The existing frontend requests readiness on workspace load and has loading/error/retry states. Those local states are verified; deployed cold-start behavior still needs observation.
 
 ## 4. Verify the selected demo deployment
 
@@ -73,7 +73,7 @@ At the user's direction, a cloud restart/redeploy survival test is no longer a p
 
 Render Free stores SQLite at `/app/data/typeform.sqlite3` inside its ephemeral filesystem. Refreshes and separate browser sessions can use the same database while that instance and file remain available. Replacement can remove it; a scheduled ping does not prevent that.
 
-Phase 2 will seed each fresh workspace once with clearly synthetic examples. Existing workspaces are never reset or refilled on page load/startup. If the entire database is lost, a new workspace gets new samples; previous edits/responses are not recovered by seeding. Domain seeds are **not implemented yet**.
+Phase 2 now seeds each fresh API-created workspace once with clearly synthetic examples. Existing workspaces are never reset or refilled on page load/startup. If the entire database is lost, a new workspace gets new samples; previous edits/responses are not recovered by seeding. Domain seeds and Phase 3 frontend initialization/counts are locally tested. Source shipping and completed cloud rollout require separate evidence.
 
 Before the evaluator walkthrough, finish required deployments/environment changes, wait for health and successful cron calls, then prepare any demo data. Set Render auto-deploys to **Off** during the evaluation window, avoid manual redeployments, and inspect the frontend/health before sharing the link. Resume deployments deliberately after review. Record the Free hosting limitation in the final submission notes; do not advertise permanent storage.
 
@@ -84,3 +84,13 @@ Local Compose remains different: its `typeform-data` named volume at `/var/data`
 Set backend `TYPEFORM_FOUNDATION_PROBE_ENABLED=false` and frontend `NEXT_PUBLIC_FOUNDATION_PROBE_ENABLED=false`, then deploy before preparing final demo data. Health endpoints remain available for the ping. Diagnostics are not creator authentication, form seeds, or analytics; Phase 2 supplies the domain schema and workspace sessions.
 
 Official configuration references: [Render Blueprint fields](https://render.com/docs/blueprint-spec), [Next.js external rewrites](https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites), [Vercel project root directory](https://vercel.com/docs/builds/configure-a-build#root-directory).
+
+## Deployment status — 2026-10-09
+
+The user reported deploying/connecting [Vercel frontend](https://scaler-typeform-clone-saksham.vercel.app) and [Render backend](https://scaler-typeform-api-0n2q.onrender.com), and authorized continuing Phase 2 before configuring cron. Ping target: `https://scaler-typeform-api-0n2q.onrender.com/api/v1/health/live`; configuration/history pending.
+
+Actual read-only verification: Python urllib GET requests to backend `/api/v1/health/ready` and frontend's same path both returned HTTPS **200**, `{"status":"ready"}`, and **Cache-Control: no-store**. This proves current readiness/rewrite. It does not verify creator cookies, form features, sustained continuity, scheduled executions or permanent storage. Phase 2 changes have not been pushed/deployed; deploy them deliberately after review. Never include raw cookie tokens in evidence.
+
+## Phase 3 shipping handoff — 2026-10-09
+
+Phase 2 core API plus Phase 3 dashboard are ready to ship together to the existing private repository after local focused checks. Render/Vercel must rebuild their respective backend/frontend from that revision. Local browser tests use ports 13000/18080; production Vercel must retain the real Render API_BACKEND_URL and Render allowed frontend origin. Do not infer successful rollout from an old health endpoint. Cron remains user-deferred and ephemeral SQLite is unchanged. No paid resource or hosting change is introduced.

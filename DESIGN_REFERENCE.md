@@ -138,3 +138,9 @@ Every unresolved mismatch should have severity, affected requirement, and dispos
 On 2026-10-09, actual browser-test screenshots of the implemented empty workspace were viewed at 390×900 and 1440×900. The shared neutral surfaces, typography, spacing, rounded panels, primary action hierarchy, and narrow desktop rail follow the approved direction. Mobile uses a horizontal workspace strip and one main pane; no horizontal overflow was found at the five tested widths. Dialog focus containment, Escape, and focus return passed browser/component checks.
 
 This is a foundation review, not full Typeform recreation. Create form is disabled/Coming soon; no fake cards/analytics shown. Subsequent R09 research measures one canvas font state and improves references; actual clone builder/results comparisons, timing, physical-phone checks and final visual acceptance remain pending. Test screenshots remain ignored artifacts; the separate R09 archive contains actual Typeform references.
+
+## Phase 3 workspace visual smoke — 2026-10-09
+
+Viewed actual application screenshots at 1440px desktop and 390px mobile against signed-in reference captures `36-workspace-actions.jpg` and `37-workspace-grid.jpg`. Implemented pale rail/panels, compact white rows/cards, dark plum action, light borders, restrained colored icons and contextual rename/duplicate/delete. Mobile keeps one pane and wraps search to its own full-width row; actual overflow assertion passed. Captures are ignored Playwright artifacts in `frontend/test-results`, reproducible by the dashboard smoke file.
+
+This is a focused visual review, not pixel-perfect fidelity or the full release rubric. Original artwork/icons are used; Typeform reference images are never product assets. Physical phone, all viewport/zoom states, exhaustive keyboard/accessibility and builder/respondent/results review remain pending.

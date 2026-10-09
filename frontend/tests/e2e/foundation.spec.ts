@@ -8,7 +8,9 @@ test("browser cookie survives reload through the real Next.js rewrite", async ({
   await expect(
     page.getByRole("heading", { name: "My forms", exact: true }),
   ).toBeVisible();
-  await expect(page.getByRole("status")).toContainText("Connected");
+  await expect(page.getByTestId("connection-status")).toContainText(
+    "Connected",
+  );
   const health = await page.request.get("/api/v1/health/ready");
   expect(health.status()).toBe(200);
   expect(health.headers()["cache-control"]).toContain("no-store");
@@ -43,9 +45,11 @@ for (const width of [360, 390, 768, 1280, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/forms");
     await expect(
-      page.getByRole("heading", { name: "Your next idea starts here" }),
+      page.getByRole("heading", { name: "My forms", exact: true }),
     ).toBeVisible();
-    await expect(page.getByRole("status")).toContainText("Connected");
+    await expect(page.getByTestId("connection-status")).toContainText(
+      "Connected",
+    );
     if (width === 390 || width === 1440) {
       await page.screenshot({
         path: testInfo.outputPath(`workspace-${width}.png`),
@@ -87,7 +91,9 @@ test("connection failure has visible retry and recovers", async ({ page }) => {
   await expect(page.getByText("Connection unavailable")).toBeVisible();
   await page.unroute("**/api/v1/health/ready");
   await page.getByRole("button", { name: "Retry connection" }).click();
-  await expect(page.getByRole("status")).toContainText("Connected");
+  await expect(page.getByTestId("connection-status")).toContainText(
+    "Connected",
+  );
 });
 
 test("public unavailable page has no creator navigation", async ({ page }) => {
@@ -113,7 +119,11 @@ test("slow readiness keeps the workspace visible and announces loading", async (
   await expect(
     page.getByRole("heading", { name: "My forms", exact: true }),
   ).toBeVisible();
-  await expect(page.getByRole("status")).toContainText("Connecting");
+  await expect(page.getByTestId("connection-status")).toContainText(
+    "Connecting",
+  );
   release();
-  await expect(page.getByRole("status")).toContainText("Connected");
+  await expect(page.getByTestId("connection-status")).toContainText(
+    "Connected",
+  );
 });

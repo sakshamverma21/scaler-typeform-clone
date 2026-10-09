@@ -11,15 +11,31 @@ export function DialogContent({
   title,
   description,
   children,
+  busy = false,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
 }: {
   title: string;
   description: string;
   children: React.ReactNode;
+  busy?: boolean;
+  onOpenAutoFocus?: (event: Event) => void;
+  onCloseAutoFocus?: (event: Event) => void;
 }) {
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="fixed inset-0 z-40 bg-black/30" />
-      <DialogPrimitive.Content className="fixed top-1/2 left-1/2 z-50 max-h-[90dvh] w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border border-border bg-surface p-6 shadow-[var(--shadow-overlay)]">
+      <DialogPrimitive.Content
+        onOpenAutoFocus={onOpenAutoFocus}
+        onCloseAutoFocus={onCloseAutoFocus}
+        onEscapeKeyDown={(event) => {
+          if (busy) event.preventDefault();
+        }}
+        onPointerDownOutside={(event) => {
+          if (busy) event.preventDefault();
+        }}
+        className="fixed top-1/2 left-1/2 z-50 max-h-[90dvh] w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border border-border bg-surface p-6 shadow-[var(--shadow-overlay)]"
+      >
         <DialogPrimitive.Title className="pr-8 text-lg font-semibold">
           {title}
         </DialogPrimitive.Title>
@@ -28,6 +44,7 @@ export function DialogContent({
         </DialogPrimitive.Description>
         <DialogPrimitive.Close
           aria-label="Close dialog"
+          disabled={busy}
           className="absolute top-4 right-4 flex size-9 items-center justify-center rounded-md text-text-muted hover:bg-surface-muted"
         >
           <X size={18} aria-hidden="true" />

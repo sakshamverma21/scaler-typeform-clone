@@ -38,6 +38,230 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/creator/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Bootstrap */
+        post: operations["bootstrap_api_v1_creator_session_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/creator/forms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Forms */
+        get: operations["list_forms_api_v1_creator_forms_get"];
+        put?: never;
+        /** Create Form */
+        post: operations["create_form_api_v1_creator_forms_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/creator/forms/{form_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Form */
+        get: operations["get_form_api_v1_creator_forms__form_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Form */
+        delete: operations["delete_form_api_v1_creator_forms__form_id__delete"];
+        options?: never;
+        head?: never;
+        /** Rename Form */
+        patch: operations["rename_form_api_v1_creator_forms__form_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/creator/forms/{form_id}/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save Draft */
+        put: operations["save_draft_api_v1_creator_forms__form_id__draft_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/creator/forms/{form_id}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Duplicate Form */
+        post: operations["duplicate_form_api_v1_creator_forms__form_id__duplicate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/creator/forms/{form_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish Form */
+        post: operations["publish_form_api_v1_creator_forms__form_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/creator/forms/{form_id}/unpublish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unpublish Form */
+        post: operations["unpublish_form_api_v1_creator_forms__form_id__unpublish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/creator/forms/{form_id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Versions */
+        get: operations["versions_api_v1_creator_forms__form_id__versions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/creator/forms/{form_id}/responses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Responses */
+        get: operations["responses_api_v1_creator_forms__form_id__responses_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/creator/forms/{form_id}/responses/{response_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Response Detail */
+        get: operations["response_detail_api_v1_creator_forms__form_id__responses__response_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/creator/forms/{form_id}/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Summary */
+        get: operations["summary_api_v1_creator_forms__form_id__summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/public/forms/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Form Definition */
+        get: operations["form_definition_api_v1_public_forms__slug__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/public/forms/{slug}/responses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Response */
+        post: operations["submit_response_api_v1_public_forms__slug__responses_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/foundation/probe": {
         parameters: {
             query?: never;
@@ -60,10 +284,145 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AnswerView */
+        AnswerView: {
+            /** Question Key */
+            question_key: string;
+            type: components["schemas"]["QuestionType"];
+            /** Title */
+            title: string;
+            /** Value */
+            value: string | number | boolean | null;
+            /** Display Value */
+            display_value: string | number | boolean | null;
+            /** Skipped */
+            skipped: boolean;
+        };
+        /** CreateForm */
+        CreateForm: {
+            /**
+             * Title
+             * @default Untitled form
+             */
+            title: string;
+        };
+        /** DistributionItem */
+        DistributionItem: {
+            /** Value */
+            value: string | number | boolean;
+            /** Label */
+            label: string;
+            /** Count */
+            count: number;
+            /** Percentage */
+            percentage: number;
+        };
+        /** DraftDefinition */
+        DraftDefinition: {
+            /** Title */
+            title: string;
+            /** Questions */
+            questions?: components["schemas"]["QuestionDefinition"][];
+            theme_settings?: components["schemas"]["ThemeSettings"];
+            ending_settings?: components["schemas"]["EndingSettings"];
+        };
+        /** EndingSettings */
+        EndingSettings: {
+            /**
+             * Title
+             * @default Thank you!
+             */
+            title: string;
+            /**
+             * Description
+             * @default Your response has been recorded.
+             */
+            description: string;
+        };
+        /** FormDetail */
+        FormDetail: {
+            form: components["schemas"]["FormMetadata"];
+            draft: components["schemas"]["DraftDefinition"];
+        };
+        /** FormList */
+        FormList: {
+            /** Items */
+            items: components["schemas"]["FormMetadata"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
+        /** FormMetadata */
+        FormMetadata: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Is Published */
+            is_published: boolean;
+            /** Public Slug */
+            public_slug: string | null;
+            /** Draft Revision */
+            draft_revision: number;
+            /** Last Save Mutation Id */
+            last_save_mutation_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Response Count */
+            response_count: number;
+            /** Seed Response Count */
+            seed_response_count: number;
+        };
+        /** FormSummary */
+        FormSummary: {
+            /** Version Id */
+            version_id: string | null;
+            /** Version Number */
+            version_number: number | null;
+            /** Title */
+            title: string;
+            /** Response Count */
+            response_count: number;
+            /** Seed Response Count */
+            seed_response_count: number;
+            /** Questions */
+            questions: components["schemas"]["QuestionSummary"][];
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
         /** HealthResponse */
         HealthResponse: {
             /** Status */
             status: string;
+        };
+        /** OperationResult */
+        OperationResult: {
+            /**
+             * Status
+             * @default deleted
+             * @constant
+             */
+            status: "deleted";
+        };
+        /** OptionDefinition */
+        OptionDefinition: {
+            /** Option Key */
+            option_key: string;
+            /**
+             * Label
+             * @default
+             */
+            label: string;
         };
         /** ProbeResponse */
         ProbeResponse: {
@@ -74,6 +433,222 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+        };
+        /** PublicForm */
+        PublicForm: {
+            /** Version Id */
+            version_id: string;
+            /** Version Number */
+            version_number: number;
+            definition: components["schemas"]["DraftDefinition"];
+        };
+        /** QuestionDefinition */
+        QuestionDefinition: {
+            /** Question Key */
+            question_key: string;
+            type: components["schemas"]["QuestionType"];
+            /**
+             * Title
+             * @default
+             */
+            title: string;
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            /**
+             * Required
+             * @default false
+             */
+            required: boolean;
+            /** Rating Max */
+            rating_max?: number | null;
+            /** Options */
+            options?: components["schemas"]["OptionDefinition"][];
+        };
+        /** QuestionSummary */
+        QuestionSummary: {
+            /** Question Key */
+            question_key: string;
+            type: components["schemas"]["QuestionType"];
+            /** Title */
+            title: string;
+            /** Answered Count */
+            answered_count: number;
+            /** Skipped Count */
+            skipped_count: number;
+            /** Distribution */
+            distribution?: components["schemas"]["DistributionItem"][];
+            /** Minimum */
+            minimum?: number | null;
+            /** Maximum */
+            maximum?: number | null;
+            /** Mean */
+            mean?: number | null;
+        };
+        /**
+         * QuestionType
+         * @enum {string}
+         */
+        QuestionType: "short_text" | "long_text" | "multiple_choice" | "dropdown" | "email" | "number" | "yes_no" | "rating";
+        /** RenameForm */
+        RenameForm: {
+            /** Title */
+            title: string;
+        };
+        /** ResponseDetail */
+        ResponseDetail: {
+            /** Id */
+            id: string;
+            /** Version Id */
+            version_id: string;
+            /**
+             * Submitted At
+             * Format: date-time
+             */
+            submitted_at: string;
+            /** Version Number */
+            version_number: number;
+            /** Form Title */
+            form_title: string;
+            /** Is Seed */
+            is_seed: boolean;
+            /** Answers */
+            answers: components["schemas"]["AnswerView"][];
+        };
+        /** ResponseItem */
+        ResponseItem: {
+            /** Id */
+            id: string;
+            /** Version Id */
+            version_id: string;
+            /**
+             * Submitted At
+             * Format: date-time
+             */
+            submitted_at: string;
+            /** Version Number */
+            version_number: number;
+            /** Is Seed */
+            is_seed: boolean;
+            /** Preview */
+            preview: components["schemas"]["AnswerView"][];
+        };
+        /** ResponseList */
+        ResponseList: {
+            /** Items */
+            items: components["schemas"]["ResponseItem"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
+        /** SaveDraft */
+        SaveDraft: {
+            /** Mutation Id */
+            mutation_id: string;
+            definition: components["schemas"]["DraftDefinition"];
+        };
+        /** SessionInfo */
+        SessionInfo: {
+            /** Workspace Id */
+            workspace_id: string;
+            /** Workspace Name */
+            workspace_name: string;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+        };
+        /** SubmissionReceipt */
+        SubmissionReceipt: {
+            /** Id */
+            id: string;
+            /** Version Id */
+            version_id: string;
+            /**
+             * Submitted At
+             * Format: date-time
+             */
+            submitted_at: string;
+        };
+        /** SubmitResponse */
+        SubmitResponse: {
+            /** Version Id */
+            version_id: string;
+            /** Submission Key */
+            submission_key: string;
+            /** Answers */
+            answers: components["schemas"]["SubmittedAnswer"][];
+        };
+        /** SubmittedAnswer */
+        SubmittedAnswer: {
+            /** Question Key */
+            question_key: string;
+            /** Value */
+            value: string | number | boolean | null;
+        };
+        /** ThemeSettings */
+        ThemeSettings: {
+            /**
+             * Font
+             * @default inter
+             * @constant
+             */
+            font: "inter";
+            /**
+             * Background
+             * @default #ffffff
+             */
+            background: string;
+            /**
+             * Text
+             * @default #2a222b
+             */
+            text: string;
+            /**
+             * Accent
+             * @default #2563eb
+             */
+            accent: string;
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+            /** Input */
+            input?: unknown;
+            /** Context */
+            ctx?: Record<string, never>;
+        };
+        /** VersionInfo */
+        VersionInfo: {
+            /** Id */
+            id: string;
+            /** Version Number */
+            version_number: number;
+            /** Title */
+            title: string;
+            /** Source Draft Revision */
+            source_draft_revision: number;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            /** Response Count */
+            response_count: number;
+        };
+        /** VersionList */
+        VersionList: {
+            /** Items */
+            items: components["schemas"]["VersionInfo"][];
+            /** Next Cursor */
+            next_cursor: string | null;
         };
     };
     responses: never;
@@ -120,6 +695,524 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+        };
+    };
+    bootstrap_api_v1_creator_session_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionInfo"];
+                };
+            };
+        };
+    };
+    list_forms_api_v1_creator_forms_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_form_api_v1_creator_forms_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateForm"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_form_api_v1_creator_forms__form_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                form_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_form_api_v1_creator_forms__form_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                form_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OperationResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rename_form_api_v1_creator_forms__form_id__patch: {
+        parameters: {
+            query?: never;
+            header?: {
+                "if-match"?: string | null;
+            };
+            path: {
+                form_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RenameForm"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_draft_api_v1_creator_forms__form_id__draft_put: {
+        parameters: {
+            query?: never;
+            header?: {
+                "if-match"?: string | null;
+            };
+            path: {
+                form_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveDraft"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    duplicate_form_api_v1_creator_forms__form_id__duplicate_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "if-match"?: string | null;
+            };
+            path: {
+                form_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_form_api_v1_creator_forms__form_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "if-match"?: string | null;
+            };
+            path: {
+                form_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormMetadata"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unpublish_form_api_v1_creator_forms__form_id__unpublish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                form_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormMetadata"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    versions_api_v1_creator_forms__form_id__versions_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+            };
+            header?: never;
+            path: {
+                form_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VersionList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    responses_api_v1_creator_forms__form_id__responses_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+                version_id?: string | null;
+            };
+            header?: never;
+            path: {
+                form_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseList"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    response_detail_api_v1_creator_forms__form_id__responses__response_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                form_id: string;
+                response_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    summary_api_v1_creator_forms__form_id__summary_get: {
+        parameters: {
+            query?: {
+                version_id?: string | null;
+            };
+            header?: never;
+            path: {
+                form_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    form_definition_api_v1_public_forms__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicForm"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    submit_response_api_v1_public_forms__slug__responses_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitResponse"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmissionReceipt"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -54,4 +54,33 @@ describe("API failure handling", () => {
       code: "connection_failed",
     });
   });
+  it("retains question and field errors and rejects malformed error entries", async () => {
+    const errors = [
+      { question_key: "question", message: "Please fill this in." },
+      { field: "body.answers.0.value", message: "Invalid value." },
+      { message: 5 },
+      null,
+      { question_key: 5, message: "Invalid shape" },
+    ];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            code: "invalid_answers",
+            message: "Check your answers.",
+            errors,
+          }),
+          { status: 422 },
+        ),
+      ),
+    );
+    await expect(
+      apiRequest("/api/v1/public/forms/test/responses"),
+    ).rejects.toMatchObject({
+      status: 422,
+      code: "invalid_answers",
+      errors: errors.slice(0, 2),
+    });
+  });
 });

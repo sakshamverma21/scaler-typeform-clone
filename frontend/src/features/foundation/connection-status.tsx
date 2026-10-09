@@ -24,7 +24,11 @@ export function ConnectionStatus() {
       : "Connected";
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-5 text-xs text-text-muted">
-      <div className="flex items-center gap-2" role="status">
+      <div
+        className="flex items-center gap-2"
+        role="status"
+        data-testid="connection-status"
+      >
         <Icon
           size={14}
           aria-hidden="true"

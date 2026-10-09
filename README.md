@@ -1,6 +1,8 @@
 # Typeform Clone — Scaler SDE Fullstack assignment
 
-A Typeform-inspired application using Next.js/TypeScript, FastAPI, and SQLite. Development proceeds in reviewed phases. **Current scope: Phase 1 foundation.** Form CRUD, the builder, publishing, submissions, sample forms, and results are not implemented yet. Live deployment is pending the user's Vercel handoff and Render setup.
+A Typeform-inspired application using Next.js/TypeScript, FastAPI, and SQLite. Development proceeds in reviewed phases. **Current scope: Phase 3 workspace management, locally verified with focused smoke coverage.** The API supports isolated demo workspaces, form management, all eight question types, versioned publication, anonymous submissions, response history, and statistics. The real dashboard supports create/rename/duplicate/delete, list/grid, search/sort, sample labels, response counts and loading/error recovery. The builder destination is an explicit read-only overview; editing, public respondent and results interfaces remain later phases. No bonus is implemented.
+
+User-reported deployments: [frontend](https://scaler-typeform-clone-saksham.vercel.app) and [backend](https://scaler-typeform-api-0n2q.onrender.com). Source shipping does not imply that the latest revision is already live; allow connected deployments to rebuild and verify them separately. The external ping is pending; see [deployment evidence](DEPLOYMENT.md#deployment-status--2026-10-09).
 
 The [GitHub repository](https://github.com/sakshamverma21/scaler-typeform-clone) is private during development by user request. The assignment requires a public repository at submission time.
 
@@ -61,7 +63,7 @@ Open localhost:3000. SQLite uses a named volume mounted at `/var/data`. Normal s
 | TYPEFORM_DATABASE_PATH | Backend | ./data/typeform.sqlite3 | Native unsynced path recommended; Render Free `/app/data/typeform.sqlite3` is ephemeral; Compose uses durable `/var/data/typeform.sqlite3`. |
 | TYPEFORM_ALLOWED_ORIGINS | Backend | ["http://localhost:3000"] | Explicit origin list for writes; no wildcards/trailing slash. |
 | TYPEFORM_FOUNDATION_PROBE_ENABLED | Backend | false unless explicitly enabled | Temporary probe endpoint; examples/Compose/Blueprint enable it for evidence. |
-| TYPEFORM_SESSION_DAYS | Backend | 30 | Probe cookie lifetime; bounded 1–90 days. |
+| TYPEFORM_SESSION_DAYS | Backend | 30 | Creator and diagnostic cookie lifetime; bounded 1–90 days. |
 | PORT | Backend hosting | 8000 fallback | Render-assigned port respected by container startup. |
 
 Changes to API_BACKEND_URL and NEXT_PUBLIC variables require a new frontend build/deployment.
@@ -70,18 +72,34 @@ Changes to API_BACKEND_URL and NEXT_PUBLIC variables require a new frontend buil
 
 The frontend owns presentation and local UI state; Python owns validation, transactions, and persistence. TanStack Query provides loading/error/retry state. Radix supplies accessible dialog behavior; tokens/Tailwind and self-hosted Inter define a consistent visual foundation.
 
-The only current application table is `foundation_probes` (UUID, unique hashed opaque token, UTC creation/expiry). It contains diagnostic records, not forms or responses. Alembic migration `0001_foundation_probe` runs during startup before readiness; SQLite uses foreign keys, a five-second busy timeout, and rollback journaling. Probe cookies are HttpOnly, host-only, SameSite=Lax, and Secure in production. Repeated checks reuse a browser's saved record.
+Alembic applies `0001_foundation_probe` and `0002_form_domain` during startup before readiness. SQLite uses foreign keys, a five-second busy timeout, and rollback journaling. The eight domain tables are `workspaces`, `creator_sessions`, `forms`, `form_versions`, `questions`, `question_options`, `responses`, and `answers`. The separate `foundation_probes` table remains temporary diagnostic data. The [schema and ER diagram](ARCHITECTURE.md#relational-schema) describe relationships, constraints, and indexes.
 
-The eight-table domain design, immutable published definitions, typed answers, optimistic draft saves, and idempotent responses are planned in [ARCHITECTURE.md](ARCHITECTURE.md), not yet implemented. Domain schema/ER diagram and feature/API overview will expand in Phase 2.
+Python services own business rules; routers parse requests and enforce creator ownership. Every request reads a consistent database snapshot. Mutations reserve SQLite's writer before reading revisions/publication state, then commit before sending success. This serializes short writes and makes competing saves, submission retries, and closure predictable; it trades throughput for a simple reliable demo.
 
-Current API (prefix `/api/v1`):
+Draft version zero is mutable. Publishing copies its questions/options/settings into an immutable positive version. Draft edits do not alter public questions or historical answers. Older published versions can submit during the same open period; unpublishing closes that period. Reopening keeps the URL and creates a new version. Results summaries use one version, defaulting to the latest.
+
+`POST /creator/session` creates or resumes a browser-specific workspace using a hashed opaque `typeform_creator` cookie (HttpOnly, host-only, SameSite=Lax, Secure in production). There is no full account system. Clearing/expiring the cookie loses creator access; public forms need no cookie. Two published **Sample:** forms cover all eight types, with **12 + 8 synthetic responses**, plus one draft. Response counts include labeled seed records. Initialization is atomic and happens once per new workspace; startup/reload never resets or resurrects deleted samples.
+
+Current API (prefix `/api/v1`; complete contracts in [OpenAPI](backend/openapi.json)):
 
 - GET `/health/live`: process liveness.
 - GET `/health/ready`: database migration/readiness check; 503 until ready.
 - POST `/foundation/probe`: origin-checked, cookie-scoped diagnostic creation/resume.
 - GET `/foundation/probe`: read that cookie's record, or 401.
+- POST `/creator/session`: initialize/resume the isolated workspace.
+- GET/POST `/creator/forms`: paginated metadata/counts or create a draft.
+- GET/PATCH/DELETE `/creator/forms/{id}`: read, rename, or delete with cascades.
+- PUT `/creator/forms/{id}/draft`: save the whole definition.
+- POST `/creator/forms/{id}/duplicate`, `/publish`, `/unpublish`: management/publication.
+- GET `/creator/forms/{id}/versions`, `/responses`, `/responses/{response_id}`, `/summary`: version history, paginated submissions, historical detail and aggregates.
+- GET `/public/forms/{slug}`: current published definition.
+- POST `/public/forms/{slug}/responses`: validate/store an anonymous completed response.
 
-Probe routes are absent unless enabled. API responses are no-store. Errors use code/message fields; database failures return recoverable 503 without internal paths. [OpenAPI JSON](backend/openapi.json) is committed; a running backend also provides `/docs`.
+Draft saves, rename, duplication and publish require `If-Match: "<draft_revision>"`; reads/save responses expose that revision. Missing preconditions return 428, stale revisions 412. A save includes a UUID `mutation_id`: immediately retrying the same accepted payload returns its existing revision; reusing the ID for other edits returns 409. Old retries after another save receive 412 and must reload/reconcile.
+
+Submissions include `version_id`, UUID `submission_key`, and `{question_key, value}` answers. Choice values are option keys, yes/no are booleans, numbers/ratings are integers. Reuse the same key/payload on a network retry to receive the original receipt, including after closure. Different payloads with the same key return 409. False and zero are valid answers; skipped optional answers have no database row. Server validation rejects foreign/duplicate keys, invalid types, lengths, and ranges. See [input bounds](ARCHITECTURE.md#implemented-phase-2-contract-details).
+
+Probe routes are absent unless enabled. API responses are no-store. Errors use `code`, `message`, and optional `errors`; database failures return 503 without internals. All writes require an exact allowed `Origin`, including requests from curl or OpenAPI's Try it out. Creator resources require the session cookie and return 404 for foreign workspaces. A running backend provides `/docs`; use the frontend `/api/v1` path for browser requests.
 
 ## Checks and generated contracts
 
@@ -110,7 +128,7 @@ npm run test:e2e
 
 The browser-test runner builds a real production artifact with the diagnostic flag and dedicated API rewrite, then Playwright starts its backend on **18080** and packaged standalone frontend on **13000**. Keep those test ports free; normal development remains on 8000/3000. It writes temporary SQLite under ignored `frontend/.cache/e2e`, outside the test-output cleanup directory. CI supplies its Python executable through PYTHON_EXECUTABLE; native tests use the project virtual environment. Run `npm run build` again before `npm run start` to restore the normal backend target after browser tests; `npm run dev` reads the normal environment directly.
 
-API tests use real migrations and temporary file-backed SQLite. Browser tests verify the actual rewrite/cookie path, reload persistence, responsive shell/dialogs, focus return, and retry after simulated failure. The restart script stops and restarts actual Uvicorn processes against the same database. A build alone is not feature proof. Evidence and unrun checks are recorded in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+API tests use real migrations and temporary file-backed SQLite. Phase 2 verification: **81 backend tests, 8 frontend unit tests, 10 Chromium tests**, production build, lint/format/strict types, and real process restart passed locally on 2026-10-09. Browser coverage includes the actual creator cookie and publish/anonymous submission/results API sequence through Next, plus the foundation shell. These are not builder/runner UI tests. The restart script verifies creator access, edited definition, response, summary and retry receipt after stopping/restarting actual Uvicorn processes. Evidence and unrun checks are recorded in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md#phase-2-verification-record).
 
 To regenerate backend lockfiles with uv:
 
@@ -125,8 +143,12 @@ Commit both lockfiles after relevant tests pass. Regenerate OpenAPI then TypeScr
 
 [DEPLOYMENT.md](DEPLOYMENT.md) contains exact Render Free → Vercel → external minutely ping steps and the revised live verification gate. On 2026-10-09 the user selected this ephemeral demo hosting instead of a paid SQLite disk. HTTPS cookie forwarding, reload continuity, and actual cron calls still need live verification. A ping reduces idle sleeping; it does not make SQLite durable after instance replacement. The original deployed durability criteria remain a documented gap. One backend instance/worker is intentional. Local Compose retains its separately verified durable volume.
 
-[ASSUMPTIONS.md](ASSUMPTIONS.md) distinguishes approved choices, placeholders, research limits, seed plans, and actual implementation facts. No synthetic forms/responses have been inserted yet; all six bonuses remain unimplemented. The final Assumptions / Mocked Data / Notes field will contain only verified release facts.
+[ASSUMPTIONS.md](ASSUMPTIONS.md) distinguishes approved choices, placeholders, research limits, and actual implementation facts. Synthetic forms/responses initialize once per fresh workspace and are displayed/labeled by the dashboard; deleting examples does not bring them back on refresh. All six bonuses remain unimplemented. The final Assumptions / Mocked Data / Notes field will contain only verified release facts.
 
 [DESIGN_REFERENCE.md](DESIGN_REFERENCE.md) lists official Typeform evidence and approximations. This repository uses original authored implementation; no existing clone repository code/assets are used. Inter is provided by Fontsource under its font license; Lucide icons and Radix primitives use their published open-source licenses. Typeform is the visual reference and is not affiliated with this assignment project.
 
-Next review: finish Phase 1 deployment evidence, then Phase 2 schema/core services. The five-minute full evaluator walkthrough becomes available after mandatory workflows are built.
+Next review: Phase 3 workspace management. Next development phase: **Phase 4 — builder and live preview**, after review. The five-minute full evaluator walkthrough becomes available after mandatory UI workflows are built. Live scheduled-ping/continuity evidence remains deferred at the user's direction.
+
+## Phase 3 focused verification
+
+On 2026-10-09, `npm run test:e2e -- dashboard.spec.ts` passed the production build/strict TypeScript check and **two real Chromium workflow tests** against actual Next/FastAPI/SQLite. Targeted lint passed. Checked CRUD/reload, independent copy, safe cancel/delete, samples/no resurrection, search, failure retry, browser isolation, session expiry and mobile overflow. Desktop/mobile screenshots were manually reviewed. Broader regression/accessibility/cross-browser coverage is deferred at the user's request to prioritize shipping; this is not a complete release QA claim.

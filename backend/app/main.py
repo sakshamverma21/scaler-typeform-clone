@@ -5,7 +5,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.api import foundation, health
+from app.api import creator, foundation, health, public
 from app.api.errors import (
     ApiError,
     api_error_handler,
@@ -59,6 +59,8 @@ def create_app(settings: Settings | None = None, *, migrate_on_startup: bool = T
         return response
 
     app.include_router(health.router, prefix="/api/v1")
+    app.include_router(creator.router, prefix="/api/v1")
+    app.include_router(public.router, prefix="/api/v1")
     if settings.foundation_probe_enabled:
         app.include_router(foundation.router, prefix="/api/v1")
     return app

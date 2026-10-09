@@ -10,14 +10,14 @@ Read [AGENTS.md](AGENTS.md), [REQUIREMENTS.md](REQUIREMENTS.md), [ARCHITECTURE.m
 |---|---|---|---|
 | 0 | Persist and freeze approved plan | Verified | DOCS-PLAN passed on 2026-10-09; see Phase 0 verification record. |
 | 1 | Foundation and deployment proof | In progress — local verified; revised live gate pending | User selected Render Free + minutely ping on 2026-10-09; HTTPS cookie/reload/ping checks pending. See Phase 1 verification record. |
-| 2 | Schema, core services, sessions, seeds | Not started | Requires Phase 1. |
-| 3 | Workspace management | Not started | Requires Phase 2. |
+| 2 | Schema, core services, sessions, seeds | Verified locally | 2026-10-09: 81 backend tests, 8 frontend unit tests, 10 Chromium checks, lint/types/build and real process restart. See Phase 2 evidence. Missing Phase 1 live checks explicitly deferred by user. |
+| 3 | Workspace management | Verified locally — focused smoke coverage | 2026-10-09: production build/strict types, targeted lint, two real Chromium workflow checks, desktop/mobile screenshot review. Broader QA deferred at user request. |
 | 4 | Complete builder and preview | Not started | Requires Phase 3. |
 | 5 | Respondent and sharing | Not started | Requires Phase 4. |
 | 6 | Responses and summaries | Not started | Requires Phase 5. |
 | 7 | Release hardening and submission preparation | Not started | Requires Phase 6; mandatory release gate. |
 
-Last fully completed phase: **0**. Current phase: **1 — Foundation and deployment proof**. Local implementation is verified and ready for review; the user has retained Vercel deployment responsibility, so the live gate remains pending. Phase 2 has not started. No application implementation was included in Phase 0.
+Latest completed implementation phase: **3 — workspace management**, locally verified with focused smoke tests and stopped for review. Phase 1's scheduled-ping/cookie/continuity gate remains deferred. **Next development phase: 4 — builder and live preview**, only after user continuation. The latest time constraint reduces interim testing to critical checks; the broader catalog remains for Phase 7. No Phase 4 editing/preview is implemented.
 
 **Approved hosting revision, 2026-10-09:** Use Vercel + Render Free + an external minutely health ping. The user accepts ephemeral SQLite for an expected short evaluation and waived cloud restart/redeploy survival checks for this demo handoff. The gate now requires live HTTPS cookie/origin/no-store checks, same-instance reload continuity/isolation, and actual scheduled calls. Keep local durable-volume evidence and the original M16/M27/M38 persistence criteria separate: deployed durability remains a documented gap, not a passed check. See [DEPLOYMENT.md](DEPLOYMENT.md) and A32–A34 in ASSUMPTIONS.md.
 
@@ -369,3 +369,57 @@ One initial canvas prompt measured Inter/sans-serif, 26px/34px and rgb(42,34,43)
 Relevant verification is archive/documentation validation; application builds/tests are not rerun for reference-only changes.
 
 **Final audit:** inline read-only Python through `backend/.venv/Scripts/python.exe` checked 38 JPEG headers/dimensions, every catalog image link, 82 resolving local file links, absence of private account identifiers/email in Markdown, unchanged requirements-table rows and Phase 2 status, and documentation-only tracked changes: **pass**. Initial dimension assertion revealed image 38 is actually 1440×810; catalog corrected, audit rerun passed. Archive totals 1,656,453 bytes. Images visually reviewed at capture or from disk; general-settings email excluded. `git diff --check`: **pass** (line-ending notices only). This checks the reference archive, not the implemented application's behavior.
+
+## Phase 2 verification record
+
+Status: **Verified locally on 2026-10-09; stopped for review.** The user reported connected Vercel/Render deployment and explicitly directed Phase 2 work while postponing cron. Phase 1's remaining live cookie/continuity/scheduler gate is deferred, not passed. Changes in this phase remain local/unpushed; no deployment of this revision is claimed.
+
+Implemented scope:
+
+- Frozen `0002_form_domain` migration and eight relational tables, typed answers, composite ownership/version/option foreign keys, checks, indexes and cascades.
+- Browser-specific 30-day opaque creator sessions, hashed tokens, secure production cookies and ownership dependencies on all creator resources.
+- Atomic first-visit samples: two published forms with 12 + 8 synthetic responses covering eight question types, and one draft. Reuse/startup/deletion never repopulates an existing workspace.
+- Thin creator/public routers with separate form, definition, publishing, submission, result, validation and seed services. Full draft management and revision/replay protection, immutable publications/stable URL, closure epochs, strict server validation, atomic/idempotent submissions, version-aware lists/details and SQL summaries.
+- Consistent read snapshots and short serialized write transactions; commit errors return failure before any success response. Structured field/question errors, including failures rejected by Pydantic before domain validation.
+- Regenerated OpenAPI/TypeScript, typed framework-independent frontend API wrappers, richer API error handling. No dashboard/builder/runner/results UI added; existing visual foundation unchanged.
+- Expanded restart verifier and API/database/browser/unit tests; README, architecture, requirements and assumption ledger reconciled with actual scope.
+
+| Check | Command / actual procedure and result |
+|---|---|
+| Backend lint/format | From backend: `.venv/Scripts/ruff.exe check .` and `.venv/Scripts/ruff.exe format --check .`: pass. |
+| API/database | From backend: `.venv/Scripts/python.exe -m pytest -q`: **81 passed**, one existing HTTPX/Starlette deprecation warning. Real temporary file-backed databases and actual migrations. Includes CRUD/order/copy/cascades, draft/public history, malformed definitions, eight types/boundaries/zero/false/skips, unknown/duplicate/foreign keys, exact statistics and pagination, ownership on every endpoint, expiration, once-only samples and failed initialization rollback. |
+| Race/retry/failure behavior | Same backend suite exercises six simultaneous identical submissions (one row/receipt), different payload reuse (409), two competing saves (one accepted, one 412), existing-cookie concurrent bootstrap, held submission versus unpublish, disk/answer insertion failure rollback, and commit failure returning 503. Same normalized payload retries succeed even after closure; new old-epoch submissions fail after reopening. |
+| Migration integrity | Backend suite upgrades from Phase 1 retaining its probe, compares ORM metadata with migrated tables, checks foreign keys/typed-value constraints, downgrades and re-upgrades. No create_all replacement of migrations. |
+| Real process restart | `.venv/Scripts/python.exe scripts/verify_local_restart.py`: **PASS**. Test-only Uvicorn process tree stopped/restarted against one temporary SQLite file. Creator access, draft key, publication, response with zero, count/mean and same-key receipt survived. Output form ID `44e9cb18-7883-4db2-85c6-6fea7f0b8dbd`, response ID `b1b06bc4-58f4-486a-9363-c5e7dc5916d2`. Disposable data removed after verification. This is local evidence only. |
+| Frontend lint/types/format | From frontend, using bundled Node **24.19.0** on PATH: `npm run lint`, `npm run typecheck`, `npm run format:check`: pass. System Node 22 was not used for acceptance. |
+| Frontend unit behavior | `npm run test`: **8 passed** across three files. Dialog/fetch behavior plus revision headers, retained mutation/submission keys, encoded cursors and preserved question/field errors. |
+| Real Chromium integration | `npm run test:e2e`: **10 passed**. Runner builds production frontend, starts actual FastAPI/Next test servers (18080/13000), then checks host-only HttpOnly/Lax creator cookie, real draft save/publication, unrelated browser submission/retry, isolation, reload count/statistics, deletion/link invalidation, and existing nine responsive/focus/loading/retry foundation checks. Domain test is an API/browser-proxy slice, not a completed user-facing form UI. |
+| Production build | Browser runner production build passed; subsequent `npm run build` also passed to restore the normal rewrite rather than leaving the dedicated test-port build. No frontend route expansion beyond Phase 1. |
+| Production backend packaging | `docker build --tag scaler-typeform-backend:phase2 --file backend/Dockerfile backend`: pass. A disposable, unmounted container (`docker run --rm -i --network none --entrypoint python scaler-typeform-backend:phase2 -`) started actual Uvicorn with production settings and verified runtime migrations/readiness, Secure/HttpOnly/Lax cookie attributes, seed counts 0/8/12, public definition and exact seeded summary. No host ports, live volume or running app changed. An initial offline build could not reuse its dependency-install layer; retry with the normal network mode reused the hash-locked cached layer and passed. |
+| Generated contracts | `.venv/Scripts/python.exe scripts/export_openapi.py` then `npm run api:generate`: pass; strict TypeScript compilation validates wrappers against generated contracts. |
+| Existing cloud connection | Read-only urllib HTTPS GET at both supplied readiness URLs: **200**, body `status: ready`, header `Cache-Control: no-store`. Frontend proxy reaches backend. This verifies the already deployed foundation, not this unpushed Phase 2 revision, creator cookie attributes or scheduled calls. |
+
+Initial issues fixed before acceptance: cast seeded booleans to integer before SQL summation; remove redundant autogenerated boolean checks from the frozen migration; return commit failures before sending success; preserve question keys on Pydantic type errors; bound numeric cursors to SQLite's integer range; fix browser fixture's required description/type contract. Windows sandbox TestClient/lint runs stalled and were stopped; approved escalation runs completed. Ruff/Prettier fixes applied. A documentation edit hit Windows' default encoding; the affected file was normalized against original UTF-8 source and remaining edits used explicit UTF-8.
+
+Remaining boundaries: no Phase 3 first-visit dashboard/session integration, builder/autosave queue/client validators, public runner/sharing UI, results UI, physical-phone review or bonuses. Definition/pagination/email limits and no-cookie bootstrap identity are recorded as A36–A42. Render Free remains ephemeral; live cookie/reload, scheduler history and >15-minute continuity checks remain pending. Requirements M34/M35 are Verified at backend/schema level; UI-dependent features are In progress/Planned and M16/M27/M38 retain their deployment gap.
+
+**Next phase after review: Phase 3 — workspace management.** Use real session/form wrappers, deduplicate first-visit bootstrap, display/label samples, implement list/grid and create/rename/duplicate/delete dialogs with pending/error states and real UI tests. Stop here; do not begin it automatically.
+
+Final documentation/source audit: explicit UTF-8 Python read checked eight current documents, 44 resolving local Markdown file links, unique complete matrix IDs (M/Q/P/B/E/U), unchanged assignment SHA-256, Phase 2 Verified locally and Phase 3 Not started, only M34/M35 promoted to Verified, no tracked live databases/secrets, and OpenAPI route inventory: **PASS**. `git diff --check`: **PASS** (line-ending notices only). Historical evidence sections retain their original phase/date boundaries; new evidence does not retroactively verify older live gates.
+
+## Phase 3 verification record
+
+**2026-10-09: complete locally with focused smoke coverage; stopped for review.** User explicitly requested prioritizing implementation/shipping and a few important tests. No database/API contract change was required; the dashboard consumes Phase 2 services.
+
+Implemented: real session bootstrap with one shared first-visit promise and 90-second wake-up allowance; browser-private samples; list/grid preference, loaded-page search/sort, pagination; correct statuses/counts/sample labels; create/rename/duplicate/delete; safe destructive confirmation; pending controls, focus return, truthful notifications, persistent failure feedback, empty/loading/retry states and expired-session recovery. Create opens `/forms/[id]/build`, currently a clearly labeled read-only overview with saved question order. Editing remains Phase 4.
+
+| Check | Actual command/procedure and result |
+|---|---|
+| Production build / strict types | `npm run test:e2e -- dashboard.spec.ts` builds the optimized frontend and checks TypeScript before starting actual Next/FastAPI servers: passed. |
+| Targeted lint / format | `node node_modules/eslint/bin/eslint.js src/features/dashboard src/components/ui src/components/providers.tsx src/app/forms src/lib/api/forms.ts tests/e2e/dashboard.spec.ts tests/e2e/foundation.spec.ts --max-warnings=0`: passed; changed frontend files formatted with Prettier. Node 24.19.0. |
+| Critical browser workflows | Same command: **2 Chromium tests passed**. Covers fresh samples/counts, list/grid, failed-create retry retaining input, create/rename/reload/independent duplicate, cancel focus, real deletion/empty state without sample resurrection, search, failed bootstrap/retry, unrelated-browser ownership and expired-cookie recovery. Real file-backed SQLite, no mocked successful CRUD. |
+| Visual smoke | Actual 1440px desktop and 390px mobile screenshots viewed against Typeform workspace captures 36/37. Mobile overflow assertion passed; search expanded to full width. Final layout checked after the adjustment. |
+
+Broader tests are intentionally deferred: no full API/unit suite rerun in Phase 3, no Firefox/WebKit, five-viewport/zoom matrix, comprehensive accessibility/keyboard pass, many-page pagination/stale-conflict fault matrix, or physical-phone test. Phase 2's earlier 81/8/10 test evidence remains historical, not a fresh Phase 3 regression result. No live deployment or durable cloud persistence claim follows from local tests. Bonuses remain unimplemented.
+
+**Next: Phase 4 — builder and live preview**, after review. Do not begin it in this phase.
