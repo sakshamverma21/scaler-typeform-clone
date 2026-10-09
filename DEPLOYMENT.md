@@ -94,3 +94,5 @@ Actual read-only verification: Python urllib GET requests to backend `/api/v1/he
 ## Phase 3 shipping handoff — 2026-10-09
 
 Phase 2 core API plus Phase 3 dashboard are ready to ship together to the existing private repository after local focused checks. Render/Vercel must rebuild their respective backend/frontend from that revision. Local browser tests use ports 13000/18080; production Vercel must retain the real Render API_BACKEND_URL and Render allowed frontend origin. Do not infer successful rollout from an old health endpoint. Cron remains user-deferred and ephemeral SQLite is unchanged. No paid resource or hosting change is introduced.
+
+Shipping evidence — 2026-10-09: `git push origin main` succeeded for [f74e30f](https://github.com/sakshamverma21/scaler-typeform-clone/commit/f74e30f), containing reviewed Phase 2 services and Phase 3 dashboard. Repository remains private. Connected cloud builds may be running; this does not verify their rollout.
