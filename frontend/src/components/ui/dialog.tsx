@@ -13,6 +13,7 @@ export function DialogContent({
   children,
   busy = false,
   className = "",
+  hideHeading = false,
   onOpenAutoFocus,
   onCloseAutoFocus,
 }: {
@@ -21,6 +22,7 @@ export function DialogContent({
   children: React.ReactNode;
   busy?: boolean;
   className?: string;
+  hideHeading?: boolean;
   onOpenAutoFocus?: (event: Event) => void;
   onCloseAutoFocus?: (event: Event) => void;
 }) {
@@ -46,10 +48,16 @@ export function DialogContent({
         }}
         className={`fixed top-1/2 left-1/2 z-50 max-h-[90dvh] w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border border-border bg-surface p-6 shadow-[var(--shadow-overlay)] ${className}`}
       >
-        <DialogPrimitive.Title className="pr-8 text-lg font-semibold">
+        <DialogPrimitive.Title
+          className={hideHeading ? "sr-only" : "pr-8 text-lg font-semibold"}
+        >
           {title}
         </DialogPrimitive.Title>
-        <DialogPrimitive.Description className="mt-2 text-sm leading-6 text-text-muted">
+        <DialogPrimitive.Description
+          className={
+            hideHeading ? "sr-only" : "mt-2 text-sm leading-6 text-text-muted"
+          }
+        >
           {description}
         </DialogPrimitive.Description>
         <DialogPrimitive.Close
@@ -59,7 +67,7 @@ export function DialogContent({
         >
           <X size={18} aria-hidden="true" />
         </DialogPrimitive.Close>
-        <div className="mt-6">{children}</div>
+        <div className={hideHeading ? "" : "mt-6"}>{children}</div>
       </DialogPrimitive.Content>
     </DialogPrimitive.Portal>
   );

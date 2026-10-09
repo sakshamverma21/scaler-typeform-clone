@@ -41,7 +41,13 @@ import { QuestionCanvas } from "./question-canvas";
 import { QuestionPicker } from "./question-picker";
 import { PreviewSurface } from "./preview";
 
-export function Builder({ id }: { id: string }) {
+export function Builder({
+  id,
+  startWithPicker = false,
+}: {
+  id: string;
+  startWithPicker?: boolean;
+}) {
   const session = useCreatorSession();
   const form = useQuery({
     queryKey: ["creator", "form", session.data?.workspace_id, id],
@@ -77,6 +83,7 @@ export function Builder({ id }: { id: string }) {
     <BuilderEditor
       key={`${session.data.workspace_id}:${id}`}
       initial={form.data}
+      startWithPicker={startWithPicker}
       workspaceId={session.data.workspace_id}
     />
   ) : null;
@@ -85,9 +92,11 @@ export function Builder({ id }: { id: string }) {
 function BuilderEditor({
   initial,
   workspaceId,
+  startWithPicker,
 }: {
   initial: FormDetail;
   workspaceId: string;
+  startWithPicker: boolean;
 }) {
   const cache = useQueryClient();
   const router = useRouter();
@@ -117,7 +126,9 @@ function BuilderEditor({
   const question =
     questions.find((q) => q.question_key === selected) ?? questions[0];
   const position = question ? questions.indexOf(question) : -1;
-  const [picker, setPickerState] = useState(false);
+  const [picker, setPickerState] = useState(
+    startWithPicker && !questions.length,
+  );
   const pickerTrigger = useRef<HTMLElement | null>(null);
   const panelTrigger = useRef<HTMLElement | null>(null);
   function setPicker(open: boolean) {

@@ -148,7 +148,7 @@ export function Dashboard() {
               : "Form and its responses deleted",
       );
       if (action.kind === "create" && "form" in result)
-        router.push(`/forms/${result.form.id}/build`);
+        router.push(`/forms/${result.form.id}/build?new=1`);
     },
     onError: async (failure, action) => {
       if (session.recover(failure)) {
@@ -197,9 +197,9 @@ export function Dashboard() {
 
   function openCreate() {
     returnFocus.current = createButton.current;
-    setName("");
+    if (busy || !workspaceId) return;
     setError(null);
-    setDialog({ kind: "create" });
+    operation.mutate({ kind: "create", title: "New form" });
   }
   function onAction(
     action: FormAction,
@@ -358,9 +358,12 @@ export function Dashboard() {
                       <button
                         disabled={busy}
                         onClick={(event) => {
-                          openCreate();
                           returnFocus.current = event.currentTarget;
-                          setName(item.title);
+                          setError(null);
+                          operation.mutate({
+                            kind: "create",
+                            title: item.title,
+                          });
                         }}
                         className="mt-4 rounded-lg border border-[#e2dfe4] bg-white px-2.5 py-1 text-sm font-medium text-[#6d6573]"
                       >

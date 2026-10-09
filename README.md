@@ -167,7 +167,7 @@ Draft edits save after about 600ms and remain separate from the public version. 
 ## Five-minute evaluator walkthrough
 
 1. Open the workspace; synthetic sample forms already contain responses. Each browser has its own creator workspace.
-2. Create a form, add/edit questions, drag to reorder and use Preview; preview never stores a response.
+2. Create a form to open the question catalog directly, rename it in the builder, add/edit questions, drag to reorder and use Preview; preview never stores a response.
 3. Open Share in the builder, publish the saved draft and copy/open the public link in another browser.
 4. Complete the form and wait for the confirmed thank-you screen. Open Results to view the submission, its original answers and Response summary.
 5. Unpublish through Share; new public submissions are rejected. Existing responses remain readable.

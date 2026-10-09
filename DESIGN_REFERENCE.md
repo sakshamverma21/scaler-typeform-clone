@@ -162,3 +162,7 @@ Viewed passing browser-test captures at 1440×900 desktop (full-page image) and 
 ## Expedited public and results interfaces — 2026-10-09
 
 Public forms reuse the existing one-question preview hierarchy, underlined controls, choice letters, directional transitions and navigation. Share/Results use pale creator surfaces, restrained borders/plum actions, compact real response table, explicit version/sample labels and labeled bar summaries. Individual answers use an accessible scrollable dialog rather than the reference side drawer. Critical functionality passed one browser workflow; full populated results/static/motion/mobile visual comparison remains pending. No claim of newly inspected original references.
+
+## Final create-flow reference — 2026-10-09
+
+User supplied paired clone/original screenshots and the original new-form catalog. Clone header/icons/spacing appear uniformly about 1.25× the original, consistent with site-specific browser zoom; advised Ctrl+0, no global CSS zoom workaround. Workspace body now scrolls internally at desktop. New form creation opens the builder immediately with a wide rounded question catalog: top Add form elements/import/AI tabs, search/recommended/apps rail and categorized colored icons. Required types remain functional; extra types/import/AI/apps are marked Coming soon. Original screenshots are references only, not product assets.

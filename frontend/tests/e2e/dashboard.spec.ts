@@ -48,20 +48,19 @@ test("workspace CRUD, persistence, safe cancellation and mobile layout", async (
   await page
     .getByRole("button", { name: "Create a form", exact: true })
     .click();
-  const dialog = page.getByRole("dialog");
-  await expect(dialog.getByLabel("Form name")).toBeFocused();
-  await dialog.getByLabel("Form name").fill("Launch feedback");
-  await dialog
-    .getByRole("button", { name: "Create form", exact: true })
-    .click();
-  await expect(dialog.getByRole("alert")).toContainText("Please try again");
-  await expect(dialog.getByLabel("Form name")).toHaveValue("Launch feedback");
-  await dialog
-    .getByRole("button", { name: "Create form", exact: true })
+  await expect(
+    page.getByText("Please try again in a moment.", { exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Create a form", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Launch feedback", exact: true }),
+    page.getByRole("dialog", { name: "Add form elements" }),
   ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await page.getByLabel("Form name").fill("Launch feedback");
+  await expect(page.getByTestId("save-status")).toContainText("Saved");
+  const dialog = page.getByRole("dialog");
   await page.getByRole("link", { name: "Back to forms" }).click();
   await expect(cards).toHaveCount(4);
 

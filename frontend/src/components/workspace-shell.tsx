@@ -176,11 +176,11 @@ export function WorkspaceShell({
           ))}
         </nav>
         <div
-          className={`flex flex-col md:flex-row ${banner ? "min-h-[calc(100dvh-268px)]" : "min-h-[calc(100dvh-190px)]"}`}
+          className={`flex flex-col md:flex-row ${banner ? "md:h-[calc(100dvh-268px)] md:min-h-[420px]" : "md:h-[calc(100dvh-190px)] md:min-h-[420px]"}`}
         >
           <aside
             aria-label="Workspace navigation"
-            className="flex shrink-0 flex-col border-b-2 border-white md:w-[280px] md:border-r-2 md:border-b-0 2xl:w-80"
+            className="flex shrink-0 flex-col border-b-2 border-white md:w-[280px] md:overflow-y-auto md:border-r-2 md:border-b-0 2xl:w-80"
           >
             <div className="px-5 py-5">
               <button
@@ -266,7 +266,11 @@ export function WorkspaceShell({
               </button>
             </div>
           </aside>
-          <main id="main-content" tabIndex={-1} className="min-w-0 flex-1">
+          <main
+            id="main-content"
+            tabIndex={-1}
+            className="min-w-0 flex-1 md:overflow-y-auto"
+          >
             {children}
           </main>
         </div>
