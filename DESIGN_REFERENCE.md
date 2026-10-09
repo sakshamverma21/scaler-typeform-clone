@@ -31,16 +31,16 @@ These are reference links, not copied product assets or a local screenshot archi
 
 On 2026-10-09 the user authorized inspection of their Chrome Typeform workspace and screenshots of assignment-relevant UI, avoiding private respondent data. The exact tab URL was provided in the conversation; its account/workspace identifiers are intentionally omitted here.
 
-**Actual outcome:** Browser and native computer-use initialization failed before account access: `failed to write kernel assets: The system cannot find the path specified. (os error 3)`, including a tool reset/retry. No authenticated screen was inspected, button operated, or screenshot saved. This is a tool runtime failure, not an outstanding permission request.
+**Initial outcome:** Chrome/native initialization failed before access with a kernel-assets path error, including reset/retry. **Subsequent recovery on 2026-10-09:** the user opened Typeform in the Codex in-app browser; authenticated inspection succeeded and 38 actual screenshots were saved. Chrome access itself was not reverified.
 
-[Local capture index](docs/design-reference/README.md) defines the screenshot location and pending views. Once access works, add actual images, dates, viewport/state metadata, and observed interactions there, then link them beside R01–R08. Never substitute invented screenshots or infer live behavior from an unobserved screen. Public-reference research above remains the current evidence.
+[R09 — local capture index](docs/design-reference/README.md) and [measured observations/image catalog](docs/design-reference/OBSERVATIONS.md) now supplement R01–R08. Live workspace, eight question types, editing/reordering, desktop/mobile preview, themes, endings, Workflow/Connect, Share and empty Results were inspected using a synthetic sample. Share unexpectedly published immediately; the user approved applying closure, which was verified in settings and publicly. Sample remains published but closed, with no stored responses observed. Prefer this current shell over conflicting old help screenshots; use R06/R07 for populated results/detail.
 
 ## Evidence limitations
 
-- No authenticated creator account was operated. Official screenshots are evidence for creator layout, not proof of measured live drag/hover behavior.
-- Exact creator font, spacing measurements, animation timing, and authenticated hover states were not established.
+- Authenticated sample editing and pointer/menu reordering were observed; complete keyboard drag, cancellation, hover and motion behavior remain unverified.
+- One initial short-question canvas prompt measured Inter/sans-serif, 26px/34px, rgb(42,34,43). This does not establish every product font/spacing value; exact animation timing remains unmeasured.
 - The live template inspection did not cover all eight input types or all validation states. No real response was intentionally submitted as part of research.
-- Mobile evidence used viewport emulation; a physical phone and software keyboard still require manual testing.
+- Initial template evidence used 390×844 emulation; new signed-in captures use Typeform's built-in mobile frame within 1440×900. Neither verifies a physical phone/software keyboard.
 - Help-center images span several interface generations. Use the newer rounded-panel workspace/builder shell as the primary direction; do not mix incompatible shells.
 - Typeform currently offers additional flows, including multiple questions per page. Those do not override the assignment's one-question-at-a-time requirement.
 - The assignment asks for exact original look/feel. Font/timing approximations must remain documented until improved; do not call the result pixel-perfect without evidence.
@@ -57,7 +57,7 @@ The following are **initial implementation tokens**, not claimed measurements of
 | Spacing | 4, 8, 12, 16, 24, 32, 48, 64 px scale. |
 | Corners and elevation | Restrained 6–12 px radii; shadows primarily on menus, dialogs, dragged items. |
 | Icons | One consistent outline family; colored question-type badges, not inconsistent emoji icons. |
-| Respondent color | Neutral background, blue answer/action accent; themed seeds only when B02 is actually verified. |
+| Respondent color | Neutral background; inspected default sample uses dark plum actions/gray inputs. Existing blue accent is a chosen variant, not measured original default; reassess against R09 in Phase 5. Themed seeds only after B02 is verified. |
 | States | Explicit hover, active, focus-visible, selected, disabled, error, and loading tokens. No color-only indication of selection/errors. |
 
 Define semantic CSS variables centrally. Accessible primitives need custom styling to match the reference. Avoid introducing a new accent, card shape, or spacing system for each feature.
@@ -72,7 +72,7 @@ Design first-visit synthetic samples, an empty workspace after samples are delet
 
 ## Builder
 
-Desktop starting proportions: approximately 240 px question navigation, flexible canvas, and 280 px settings panel. Verify against reference at the target viewport rather than treating these as exact product measurements.
+Desktop original starting proposal: 240px navigation/280px settings. New 1440×900 screenshots show approximately 256px side panels; use R09 as the visual baseline with a flexible canvas. Neither is a universal fixed product measurement.
 
 - Header: breadcrumb/editable title, Content, Workflow, Connect, Share, Results destinations.
 - Toolbar: Add content, Design, desktop/mobile preview controls, interactive preview play action.
@@ -137,4 +137,4 @@ Every unresolved mismatch should have severity, affected requirement, and dispos
 
 On 2026-10-09, actual browser-test screenshots of the implemented empty workspace were viewed at 390×900 and 1440×900. The shared neutral surfaces, typography, spacing, rounded panels, primary action hierarchy, and narrow desktop rail follow the approved direction. Mobile uses a horizontal workspace strip and one main pane; no horizontal overflow was found at the five tested widths. Dialog focus containment, Escape, and focus return passed browser/component checks.
 
-This is a foundation review, not a claim that the full Typeform interface or all creator/respondent interactions have been recreated. Create form is visibly disabled/Coming soon; no fake form cards or analytics are shown. Original font/timing measurement, full builder/results comparisons, physical-phone behavior, and final visual regression acceptance remain pending their feature phases. Images from test runs are ignored artifacts; the planning reference inventory above is unchanged.
+This is a foundation review, not full Typeform recreation. Create form is disabled/Coming soon; no fake cards/analytics shown. Subsequent R09 research measures one canvas font state and improves references; actual clone builder/results comparisons, timing, physical-phone checks and final visual acceptance remain pending. Test screenshots remain ignored artifacts; the separate R09 archive contains actual Typeform references.

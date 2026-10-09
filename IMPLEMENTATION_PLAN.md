@@ -357,3 +357,15 @@ Authorized Chrome Typeform inspection could not start: browser and native comput
 | Live services / scheduler | **Not verified/configured**. Actual service URLs, HTTPS proxy checks and scheduled-call history remain missing. No complete application requirement or later phase was marked Verified. |
 
 Phase 2 remains Not started. Stop for deployment/review handoff.
+
+### Authenticated design-reference recovery — 2026-10-09
+
+User requested further Typeform research before the next phase. In-app browser access succeeded after the earlier Chrome/native failures. Added **38 actual, visually reviewed JPEG screenshots**, [capture coverage](docs/design-reference/README.md), and [per-image metadata/observations](docs/design-reference/OBSERVATIONS.md). Updated design guidance, assumptions, requirement evidence and agent instructions. No application code, dependency, database or hosting configuration changed; Phase 1's live cookie/reload/ping gate remains pending and Phase 2 remains Not started.
+
+Actual manual procedure: created/renamed a synthetic Typeform form, added/edited all eight types and choices, tested menu Move up and pointer drag (sidebar/canvas numbering confirmed), inspected themes/settings/endings/Workflow/Connect, walked desktop/mobile-frame preview through required/email errors, Enter, choices/dropdown, zero/No/rating and completion. Results afterward showed no responses. Captured empty summary and workspace list/menu/grid. Share immediately published the research sample; closure was applied only after the user's specific approval and independently confirmed on the public page. Form remains published but closed, not unpublished/deleted. Temporary theme discarded; viewport reset; extra public tab closed.
+
+One initial canvas prompt measured Inter/sans-serif, 26px/34px and rgb(42,34,43); panel proportions observed in desktop captures. Mobile images use Typeform's built-in frame within desktop, not a physical phone. Populated table/detail/charts, full keyboard drag/IME/reduced-motion coverage, delete confirmation and exact animation timing remain missing. Use official R06/R07 for populated results. These are original-product observations, not passing clone tests or a completed phase.
+
+Relevant verification is archive/documentation validation; application builds/tests are not rerun for reference-only changes.
+
+**Final audit:** inline read-only Python through `backend/.venv/Scripts/python.exe` checked 38 JPEG headers/dimensions, every catalog image link, 82 resolving local file links, absence of private account identifiers/email in Markdown, unchanged requirements-table rows and Phase 2 status, and documentation-only tracked changes: **pass**. Initial dimension assertion revealed image 38 is actually 1440×810; catalog corrected, audit rerun passed. Archive totals 1,656,453 bytes. Images visually reviewed at capture or from disk; general-settings email excluded. `git diff --check`: **pass** (line-ending notices only). This checks the reference archive, not the implemented application's behavior.

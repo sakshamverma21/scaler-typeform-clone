@@ -1,32 +1,30 @@
 # Typeform screenshot capture index
 
-Linked from [DESIGN_REFERENCE.md](../../DESIGN_REFERENCE.md). This folder is for actual, privacy-reviewed Typeform UI reference screenshots and their observation notes, not application assets or generated mockups.
+Linked from [DESIGN_REFERENCE.md](../../DESIGN_REFERENCE.md). **38 actual JPEG screenshots captured and visually reviewed on 2026-10-09**, using the signed-in Codex in-app browser. Earlier Chrome/native initialization failures are historical; Chrome access itself was not reverified.
 
-**2026-10-09 status: no screenshots captured.** The user authorized signed-in Chrome inspection and supplied the exact workspace tab. Both browser and native computer-use initialization failed before access with a kernel-assets path error. Reset/retry did not resolve it. Authorization is already present; tool availability is the missing prerequisite. Do not infer UI details from these pending entries.
+See [the complete image catalog and observations](OBSERVATIONS.md) for every screenshot, dimensions, findings and limitations. These are design references, not application assets or generated mockups.
 
-## Pending captures
+Research used the synthetic form **UI Research — Scaler Assignment**. Typeform's Share button published it immediately. With the user's subsequent explicit approval, its closure setting was published; both settings and the public page confirmed it is closed. Results showed no responses after preview completion. The research form remains in the user's workspace for reference.
 
-| ID | Screen/state to inspect | Requirements | Status |
+## Coverage
+
+| ID | Surface/interaction | Requirements | Evidence and limits |
 |---|---|---|---|
-| C01 | Workspace overview, list/grid, form menu | M10–M13, M28 | Pending |
-| C02 | Create/rename dialogs and delete confirmation, without completing destructive actions | M01, M11, M13, M29 | Pending |
-| C03 | Builder overview: header, question list, canvas, settings, endings | M02–M09, M28 | Pending |
-| C04 | Question picker, eight required types, permitted placeholder destinations | M06, M31, P01–P04 | Pending |
-| C05 | Each required type's canvas/settings; required toggle, description and option editor | M03, M06–M08 | Pending |
-| C06 | Reorder affordances and observed pointer/keyboard interaction, only in a user-approved disposable form | M04 | Pending |
-| C07 | Preview desktop/mobile, input/validation/back navigation | M09, M17–M21 | Pending |
-| C08 | Share/publish settings and link affordances, without publishing/unpublishing a real form | M14–M15 | Pending |
-| C09 | Responses table/detail and summary using empty or explicitly synthetic data only | M24–M26 | Pending |
-| C10 | Respondent controls, progress, transition sequence, keyboard hints and default ending in nonpersisting preview | M17–M22 | Pending |
+| C01 | Workspace list/grid/menu | M10–M13, M28 | Captured; duplicate/delete operations unperformed. |
+| C02 | Creation/rename dialogs | M01, M11, M13, M29 | Creation/rename performed; delete confirmation uninspected. |
+| C03 | Builder shell/canvas/settings/endings | M02–M09, M28 | Captured current rounded-panel shell. |
+| C04 | Picker/types/placeholders | M06, M31, P01–P04 | All eight selected; payment/upload visible, Workflow/Connect inspected. |
+| C05 | Eight type canvases/settings | M03, M06–M08 | All captured; synthetic edits and choices. |
+| C06 | Reorder | M04 | Menu and pointer moves verified; keyboard/cancel untested. |
+| C07 | Desktop/mobile preview/validation | M09, M17–M21 | Required/email errors, Enter, choices, dropdown, zero/No/rating observed. Mobile uses built-in frame. |
+| C08 | Share/closure | M14–M15 | Immediate publication observed; user-approved closure applied and publicly verified. |
+| C09 | Results/summary | M24–M26 | Empty/zero-answer states captured; populated table/detail/charts still official references only. |
+| C10 | Progress/navigation/ending | M17–M22 | Desktop/mobile controls, explicit final Submit, ending captured; timing/full keyboard coverage unmeasured. |
 
-## Capture procedure
+## Use and privacy
 
-1. Use the already authorized Typeform tab. Inspect relevant controls; do not alter billing, account settings, integrations, or real forms/responses. Obtain a disposable sample context before mutations. Do not click every account button indiscriminately.
-2. Record actual viewport and screen state. Prefer matching 1440×900 and 390×844 comparisons when the supported browser tools permit those viewports; never label an unmeasured viewport as exact.
-3. Before saving, check the image for account email/name, private workspace/form content, respondent answers, tokens and other sensitive data. Capture a clean sample context or omit the image. Do not commit private account identifiers. Preview must not send a real submission.
-4. Save each actual image here with a descriptive name such as `c03-builder-desktop.png`. Add its Markdown link only after the file exists and has been visually inspected. If privacy requires cropping/redaction, record it; do not treat modified areas as design evidence.
-5. For each capture record date, public reference/source surface (no private account URL), measured viewport, form/sample state, observed layout/interactions, limitations, and the related requirement IDs. Distinguish measured values from proposed approximations.
-6. Observe motion, keyboard ownership, focus, hover and drag separately; a static screenshot cannot verify those behaviors. Never claim an interaction was inspected unless it was actually performed safely.
-7. Update C01–C10 and DESIGN_REFERENCE.md with evidence. If a destination is inaccessible, keep it Pending with the reason and retain its official help reference.
+Compare matching states during Phases 3–6. Prefer live shell over conflicting older help images; keep official populated-results references. Assignment one-question-at-a-time behavior overrides current grouped pages. AI, CRM, teams, integrations and advanced analytics remain outside mandatory scope or explicit placeholders.
 
-Reference images guide our own implementation. They are not copied Typeform product assets shipped in the application, and they do not establish endorsement or permission to reuse proprietary fonts/code.
+Account header names and notification email were excluded. No account/workspace URLs, credentials, raw snapshots or real respondent data stored. Builder images show initials only; Share shows the synthetic research URL, now closed. Crops/framing recorded in catalog. Temporary viewport overrides reset and extra public-verification tab closed.
+
+Reference screenshots, Typeform logos and integration artwork are for comparison, not assets to ship in our clone. Future captures must record date, dimensions, actual state, privacy review and uninspected interactions. Research does not verify clone functionality.
